@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project_Grades.GradesController">
+   <children>
+      <Pane fx:id="contentPane" layoutY="101.0" prefHeight="295.0" prefWidth="640.0" style="-fx-border-color: black;" />
+      <Pane fx:id="topPane" prefHeight="102.0" prefWidth="640.0">
+         <children>
+            <Button fx:id="loadFile" layoutX="542.0" layoutY="14.0" mnemonicParsing="false" onAction="#calcAverageGrade" text="Last inn data" />
+            <Button fx:id="saveFile" layoutX="554.0" layoutY="51.0" mnemonicParsing="false" text="Lagre data" />
+            <TextArea fx:id="myAverageGradeField" editable="false" layoutX="14.0" layoutY="19.0" prefHeight="65.0" prefWidth="210.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="contentPane1" layoutY="396.0" prefHeight="84.0" prefWidth="640.0" style="-fx-background-color: lightgray;">
+         <children>
+            <Button fx:id="saveFile1" layoutX="535.0" layoutY="30.0" mnemonicParsing="false" text="Legg til emne." />
+            <TextField layoutX="171.0" layoutY="31.0" promptText="Emne kode" text="Emne kode" />
+            <TextField layoutX="14.0" layoutY="30.0" promptText="Emne navn" text="Emne navn" />
+            <TextField layoutX="458.0" layoutY="31.0" prefHeight="25.0" prefWidth="49.0" promptText="Emne poeng" text="Poeng" />
+            <TextField blendMode="SRC_ATOP" cacheShape="false" centerShape="false" depthTest="DISABLE" editable="false" focusTraversable="false" layoutX="14.0" layoutY="2.0" pickOnBounds="false" prefHeight="25.0" prefWidth="138.0" text="Legg til ett nytt emne:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </TextField>
+            <ComboBox layoutX="343.0" layoutY="31.0" prefHeight="25.0" prefWidth="98.0" promptText="Karakter" visibleRowCount="6" />
+         </children>
+         <opaqueInsets>
+            <Insets top="5.0" />
+         </opaqueInsets>
+      </Pane>
+   </children>
+</AnchorPane>
