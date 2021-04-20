@@ -54,6 +54,26 @@ public class PersonGrades {
 		System.out.println("New course added: "+newCourse);
 	}
 	
+	public char getWorstGrade() {
+		char worstGrade = 'A'; // fixed value set since this is best allowed grade.
+		for (Grade thisCourse: myGrades) {
+			if (thisCourse.getCourseGrade() > worstGrade) {
+				worstGrade = thisCourse.getCourseGrade();
+			}
+		}
+		return worstGrade;
+	}
+	
+	public char getBestGrade() {
+		char bestGrade = 'F'; // fixed value set since this is worst allowed grade. 
+		for (Grade thisCourse: myGrades) {
+			if (thisCourse.getCourseGrade() < bestGrade) {
+				bestGrade = thisCourse.getCourseGrade();
+			}
+		}
+		return bestGrade;
+	}
+	
 	public char getAverageGrade() {
 		double totalPoints = 0; //Initialization of point summation used in loop.
 		
@@ -133,7 +153,10 @@ public class PersonGrades {
 		Per.addNewGrade("Webtek", "IT2805", 'A');
 		Per.addNewGrade("Matte1", "TMA4100", 'B');
 		Per.addNewGrade("Masterprosjekt", "KJ3900", 'A', 60);
+		Per.addNewGrade("Exphil", "EXPH0004", 'D', 7.5);
 		System.out.println(Per);
+		System.out.println("Best grade: "+Per.getBestGrade());
+		System.out.println("Worst grade: "+Per.getWorstGrade());
 	}
 
 }

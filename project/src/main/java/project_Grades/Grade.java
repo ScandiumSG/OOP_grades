@@ -15,8 +15,10 @@ public class Grade {
 		
 		if (!subjectCode.getClass().equals(String.class)) {
 			throw new IllegalArgumentException("Course code must be a string.");
-		} else if (((!subjectCode.substring(0,2).matches("[A-Z]+")) && (!subjectCode.substring(0,3).matches("[A-Z]+"))) || (!subjectCode.substring(3).matches("[0-9]+"))) {
-			throw new IllegalArgumentException("Invalid format of course code. Must be 2/3 letters then a number.");
+		} else if (((!subjectCode.substring(0,2).matches("[A-Z]+")) && (!subjectCode.substring(0,3).matches("[A-Z]+")) && (!subjectCode.substring(0,4).matches("[A-Z]+")))) {
+			throw new IllegalArgumentException("Invalid format of course code. Course code must start with 2-4 letters.");
+		} else if ((!subjectCode.substring(2).matches("[0-9]+")) && (!subjectCode.substring(3).matches("[0-9]+")) && (!subjectCode.substring(4).matches("[0-9]+"))) {
+			throw new IllegalArgumentException("Invalid format of course code. Course code cannot start with numbers, must begin with letters.");
 		} else {
 			courseCode = subjectCode;
 		}
