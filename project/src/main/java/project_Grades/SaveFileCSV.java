@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class SaveToFile_CSV {
+public class SaveFileCSV {
 
 	public void save(String fileName, PersonGrades courseCollection) throws FileNotFoundException{
 		
@@ -33,9 +33,9 @@ public class SaveToFile_CSV {
 		
 		// Retrieve information and write to .csv file
 		PrintWriter fileWriter = new PrintWriter(mySaveFile);
-		fileWriter.print("PersonName:"+courseCollection.getPersonName());
+		fileWriter.print("-PersonName:"+courseCollection.getPersonName()+"*");
 		fileWriter.println();
-		fileWriter.print("CourseName,CourseCode,CourseGrade,CoursePoints");
+		fileWriter.print("_CourseName,CourseCode,CourseGrade,CoursePoints");
 		fileWriter.println();
 		for (int i = 0; i < courseCollection.getCourseAmount(); i++) {
 			Grade currentCourse = courseCollection.getCourse(i);
@@ -60,7 +60,7 @@ public class SaveToFile_CSV {
 		testPerson.addNewGrade("TestCourse01", "MMM0001", 'B');
 		testPerson.addNewGrade("TestCourse02", "MMM0002", 'C');
 		
-		SaveToFile_CSV mySave = new SaveToFile_CSV();
+		SaveFileCSV mySave = new SaveFileCSV();
 		try {
 			mySave.save("TestSaving", testPerson);
 			mySave.deleteFile("TestSaving");
