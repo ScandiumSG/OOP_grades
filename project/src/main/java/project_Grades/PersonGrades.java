@@ -7,20 +7,43 @@ public class PersonGrades {
 	private String personName;
 	
 	public PersonGrades(String name) {
-		this.personName = name;
+		if (name == null) {
+			throw new IllegalArgumentException("Person name cannot be 'null'");
+		} else {
+			this.personName = name;
+		}
 	}
 	
 	public Grade getCourse(int n) {
 		return this.myGrades.get(n);
 	}
 	
+	public Grade getCourse(Grade desiredCourse) {
+		Grade foundCourse = null;
+		for (Grade thisCourse: myGrades) {
+			if (thisCourse == desiredCourse) {
+				foundCourse = thisCourse;
+			}
+		}
+		if (foundCourse != null) {
+			return foundCourse;
+		} else {
+			return null;
+		}
+		
+	}
+	
 	public void removeCourse(int n) {
 		this.myGrades.remove(n);
 	}
 	
+	public void removeCourse(Grade removeCourse) {
+		this.myGrades.remove(removeCourse);
+	}
+	
 	public int getCourseAmount() {
 		if (this.myGrades.size()!=0) {
-		return this.myGrades.size();
+			return this.myGrades.size();
 		} else {
 			return -1;
 		}
@@ -35,7 +58,11 @@ public class PersonGrades {
 	}
 	
 	public void setPersonName(String name) {
-		this.personName = name;
+		if (name == null) {
+			throw new IllegalArgumentException("Person name cannot be 'null'");
+		} else {
+			this.personName = name;
+		}
 	}
 	
 	public String getPersonName() {
@@ -45,13 +72,18 @@ public class PersonGrades {
 	public void addNewGrade(String subjectName, String subjectCode, char grade) {
 		Grade newCourse = new Grade(subjectName, subjectCode, grade);
 		this.myGrades.add(newCourse);
-		System.out.println("New course added: "+newCourse);
+		// System.out.println("New course added: "+newCourse);
 	}
 	
 	public void addNewGrade(String subjectName, String subjectCode, char grade, double points) {
 		Grade newCourse = new Grade(subjectName, subjectCode, grade, points);
 		this.myGrades.add(newCourse);
-		System.out.println("New course added: "+newCourse);
+		// System.out.println("New course added: "+newCourse);
+	}
+	
+	public void addNewGrade(Grade newCourse) {
+		this.myGrades.add(newCourse);
+		// System.out.println("New course added: "+newCourse);
 	}
 	
 	public char getWorstGrade() {
@@ -87,7 +119,7 @@ public class PersonGrades {
 	}
 	
 	// Convert from a char grade to a int that can be directly used in calculations.
-	public int fromGradeToInt(char grade) {
+	private int fromGradeToInt(char grade) {
 		if (grade == 'A') {
 			return 5;
 		} else if (grade == 'B') {
@@ -104,7 +136,7 @@ public class PersonGrades {
 	}
 	
 	// Convert from a double to a char grade.
-	public char fromDoubleToGrade(double n) {
+	private char fromDoubleToGrade(double n) {
 		if (n == 5) {
 			return 'A';
 		} else if (n == 4) {
@@ -152,7 +184,7 @@ public class PersonGrades {
 		Per.addNewGrade("ITGK", "TDT4109",'B');
 		Per.addNewGrade("Webtek", "IT2805", 'A');
 		Per.addNewGrade("Matte1", "TMA4100", 'B');
-		Per.addNewGrade("Masterprosjekt", "KJ3900", 'A', 60);
+		Per.addNewGrade("Masterprosjekt", "KJ3900", 'B', 60);
 		Per.addNewGrade("Exphil", "EXPH0004", 'D', 7.5);
 		System.out.println(Per);
 		System.out.println("Best grade: "+Per.getBestGrade());
