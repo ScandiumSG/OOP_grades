@@ -1,4 +1,4 @@
-open module todolist {
+open module project {
 	requires javafx.base;
 	requires javafx.controls;
 	requires javafx.fxml;

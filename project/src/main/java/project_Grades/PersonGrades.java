@@ -152,7 +152,7 @@ public class PersonGrades {
 		Per.addNewGrade("ITGK", "TDT4109",'B');
 		Per.addNewGrade("Webtek", "IT2805", 'A');
 		Per.addNewGrade("Matte1", "TMA4100", 'B');
-		Per.addNewGrade("Masterprosjekt", "KJ3900", 'A', 60);
+		Per.addNewGrade("Masterprosjekt", "KJ3900", 'B', 60);
 		Per.addNewGrade("Exphil", "EXPH0004", 'D', 7.5);
 		System.out.println(Per);
 		System.out.println("Best grade: "+Per.getBestGrade());
