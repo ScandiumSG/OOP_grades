@@ -1,8 +1,15 @@
 package project_Grades;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -43,8 +50,8 @@ public class GradesController {
 	@FXML
 	TextField newCourseCode;
 	
-//	@FXML
-//	ChoiceBox<char> newCourseGrade;
+	@FXML
+	ChoiceBox<String> newCourseGrade;
 	
 	@FXML
 	TextField newCoursePoints;
@@ -52,21 +59,39 @@ public class GradesController {
 	@FXML
 	TextField savePaneFileName;
 	
-//	@FXML
-//	private void addNewCourse() {
-//		if (newCoursePoints.getText()=="7.5") {
-//		myGrades.addNewGrade(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getText().charAt(0));
-//		} else {
-//			myGrades.addNewGrade(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getText().charAt(0), Double.valueOf(newCoursePoints.getText()));
-//		}
-//		calcAverageGrade();
-//	}
+	@FXML
+	Button CloseSaveFilePaneBtn;
+	
+	@FXML
+	TableView<?> contentTable;
+	
+	
+	@FXML
+	private void addNewCourse() {
+		myGrades.addNewGrade(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getSelectionModel().getSelectedItem().charAt(0), Double.valueOf(newCoursePoints.getText()));
+		newCourseName.setText(null); newCourseCode.setText(null); newCourseGrade.setValue(null); newCoursePoints.setText(null);
+		calcAverageGrade();
+	}
 	
 	@FXML
 	private void initialize() {
 		myGrades = new PersonGrades("Ny bruker");
+		saveFilePaneToggle();
 		calcAverageGrade();
+		
+		List<String> list = new ArrayList<String>();
+		list.add("A");
+		list.add("B");
+		list.add("C");
+		list.add("D");
+		list.add("E");
+		list.add("F");
+		
+		ObservableList<String> availableChoices = FXCollections.observableArrayList(list);
+		newCourseGrade.setItems(availableChoices);
 	}
+	
+
 	
 //	@FXML
 //	private void loadFile() {
@@ -76,9 +101,16 @@ public class GradesController {
 	// TODO Connect loading of file
 	
 	@FXML
-	private void saveFilePaneShow() {
-		saveFilePane.setDisable(true);
-		// TODO make savePane show up
+	private void saveFilePaneToggle() {
+		if (saveFilePane.isDisabled()) {
+			saveFilePane.setDisable(false);
+			saveFilePane.setOpacity(1);
+			saveFilePane.toFront();
+		} else if (!saveFilePane.isDisabled()) {
+			saveFilePane.setDisable(true);
+			saveFilePane.setOpacity(0);
+			saveFilePane.toBack();
+		}
 	}
 	
 	@FXML
@@ -88,25 +120,10 @@ public class GradesController {
 		try {
 			fileSaver.save(fileName, myGrades);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			// Connect to error pane
 			e.printStackTrace();
 		}
 	}
-
-	
-//	@FXML
-//	private void createCourseTiles() {
-//		coursePane.setStyle(" -fx-background-color: green");
-//		Pane newPane = new Pane();
-//		newPane.prefHeight(30);
-//		newPane.prefWidth(20);
-//		newPane.setTranslateX(40);
-//		newPane.setTranslateY(30);
-//		newPane.setStyle("-fx-border-color: blue; -fx-border-width: 2px");
-//		for (int i=0; i<myGrades.getCourseAmount();i++) {
-//
-//		}
-//	}
 	
 	@FXML
 	void calcAverageGrade() {
@@ -114,7 +131,6 @@ public class GradesController {
 			myAverageGradeField.setText("Hei, "+myGrades.getPersonName()+".\n\nDu har ingen registerte emner.");
 		} else {
 			myAverageGradeField.setText("Hei, "+myGrades.getPersonName()+".\n\n Din gjennomsnittskarakter er: "+myGrades.getAverageGrade());
-//			myAverageGradeField.setText("Hei Stian!\n\nDin gjennomsnittskarakter er: C");	
 		}
 	}
 }
