@@ -2,25 +2,25 @@ package project_Grades;
 
 import java.util.ArrayList;
 
-public class PersonGrades {
-	private ArrayList<Grade> myGrades = new ArrayList<Grade>();
-	private String personName;
+public class Student {
+	private ArrayList<Course> myGrades = new ArrayList<Course>();
+	private String studentName;
 	
-	public PersonGrades(String name) {
+	public Student(String name) {
 		if (name == null) {
 			throw new IllegalArgumentException("Person name cannot be 'null'");
 		} else {
-			this.personName = name;
+			this.studentName = name;
 		}
 	}
 	
-	public Grade getCourse(int n) {
+	public Course getCourse(int n) {
 		return this.myGrades.get(n);
 	}
 	
-	public Grade getCourse(Grade desiredCourse) {
-		Grade foundCourse = null;
-		for (Grade thisCourse: myGrades) {
+	public Course getCourse(Course desiredCourse) {
+		Course foundCourse = null;
+		for (Course thisCourse: myGrades) {
 			if (thisCourse == desiredCourse) {
 				foundCourse = thisCourse;
 			}
@@ -37,7 +37,7 @@ public class PersonGrades {
 		this.myGrades.remove(n);
 	}
 	
-	public void removeCourse(Grade removeCourse) {
+	public void removeCourse(Course removeCourse) {
 		this.myGrades.remove(removeCourse);
 	}
 	
@@ -51,7 +51,7 @@ public class PersonGrades {
 	
 	public double getTotalCoursePoints() {
 		double totalPoints = 0;
-		for (Grade thisCourse: this.myGrades) {
+		for (Course thisCourse: this.myGrades) {
 			totalPoints = totalPoints + thisCourse.getCoursePoints();
 		}
 		return totalPoints;
@@ -61,34 +61,34 @@ public class PersonGrades {
 		if (name == null) {
 			throw new IllegalArgumentException("Person name cannot be 'null'");
 		} else {
-			this.personName = name;
+			this.studentName = name;
 		}
 	}
 	
 	public String getPersonName() {
-		return this.personName;
+		return this.studentName;
 	}
 	
 	public void addNewGrade(String subjectName, String subjectCode, char grade) {
-		Grade newCourse = new Grade(subjectName, subjectCode, grade);
+		Course newCourse = new Course(subjectName, subjectCode, grade);
 		this.myGrades.add(newCourse);
 		// System.out.println("New course added: "+newCourse);
 	}
 	
 	public void addNewGrade(String subjectName, String subjectCode, char grade, double points) {
-		Grade newCourse = new Grade(subjectName, subjectCode, grade, points);
+		Course newCourse = new Course(subjectName, subjectCode, grade, points);
 		this.myGrades.add(newCourse);
 		// System.out.println("New course added: "+newCourse);
 	}
 	
-	public void addNewGrade(Grade newCourse) {
+	public void addNewGrade(Course newCourse) {
 		this.myGrades.add(newCourse);
 		// System.out.println("New course added: "+newCourse);
 	}
 	
 	public char getWorstGrade() {
 		char worstGrade = 'A'; // fixed value set since this is best allowed grade.
-		for (Grade thisCourse: myGrades) {
+		for (Course thisCourse: myGrades) {
 			if (thisCourse.getCourseGrade() > worstGrade) {
 				worstGrade = thisCourse.getCourseGrade();
 			}
@@ -98,7 +98,7 @@ public class PersonGrades {
 	
 	public char getBestGrade() {
 		char bestGrade = 'F'; // fixed value set since this is worst allowed grade. 
-		for (Grade thisCourse: myGrades) {
+		for (Course thisCourse: myGrades) {
 			if (thisCourse.getCourseGrade() < bestGrade) {
 				bestGrade = thisCourse.getCourseGrade();
 			}
@@ -109,7 +109,7 @@ public class PersonGrades {
 	public char getAverageGrade() {
 		double totalPoints = 0; //Initialization of point summation used in loop.
 		
-		for (Grade thisCourse : this.myGrades) { // Look at all courses in this.myGrades
+		for (Course thisCourse : this.myGrades) { // Look at all courses in this.myGrades
 			double weightedPoints = fromGradeToInt(thisCourse.getCourseGrade()) * thisCourse.getCoursePoints(); // Weight the courses based on points
 			totalPoints = totalPoints + weightedPoints;
 		}
@@ -155,7 +155,7 @@ public class PersonGrades {
 	// Abstract retrieval of number of each grade, return as a integer list. A = int[0], F = int[5].
 	public int[] extractData() {
     	int[] gradeSummation = {0, 0, 0, 0, 0, 0};
-    	for (Grade thisCourse: this.myGrades) {
+    	for (Course thisCourse: this.myGrades) {
     		if (thisCourse.getCourseGrade() == 'A') {
     			gradeSummation[0] += 1;
     		} else if (thisCourse.getCourseGrade() == 'B') {
@@ -180,7 +180,7 @@ public class PersonGrades {
 	}
 	
 	public static void main(String[] args) {
-		PersonGrades Per = new PersonGrades("Per");
+		Student Per = new Student("Per");
 		Per.addNewGrade("ITGK", "TDT4109",'B');
 		Per.addNewGrade("Webtek", "IT2805", 'A');
 		Per.addNewGrade("Matte1", "TMA4100", 'B');
