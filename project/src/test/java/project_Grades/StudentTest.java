@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-public class PersonGradesTest {
+public class StudentTest {
 	private Student testPerson = new Student("JUnitTesting");
 	
 	@BeforeEach
