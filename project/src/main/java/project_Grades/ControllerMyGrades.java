@@ -14,8 +14,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
-public class GradesController {
-	private PersonGrades myGrades;
+public class ControllerMyGrades {
+	private Student myGrades;
 	
 	@FXML
 	Pane topPane;
@@ -75,7 +75,7 @@ public class GradesController {
 	
 	@FXML
 	private void initialize() {
-		myGrades = new PersonGrades("Ny bruker");
+		myGrades = new Student("Ny bruker");
 		saveFilePaneToggle();
 		calcAverageGrade();
 		

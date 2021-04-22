@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 
 public class SaveFileCSV {
 
-	public void save(String fileName, PersonGrades courseCollection) throws FileNotFoundException{
+	public void save(String fileName, Student courseCollection) throws FileNotFoundException{
 		try {
 			// Make folders if appropriate folders don't exist.
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\");
@@ -37,7 +37,7 @@ public class SaveFileCSV {
 			fileWriter.print("_CourseName,CourseCode,CourseGrade,CoursePoints");
 			fileWriter.println();
 			for (int i = 0; i < courseCollection.getCourseAmount(); i++) {
-				Grade currentCourse = courseCollection.getCourse(i);
+				Course currentCourse = courseCollection.getCourse(i);
 				String printLine = currentCourse.getCourseName()+","+currentCourse.getCourseCode()+","+String.valueOf(currentCourse.getCourseGrade()+","+String.valueOf(currentCourse.getCoursePoints()));
 				fileWriter.print(printLine);
 				fileWriter.println();
@@ -73,7 +73,7 @@ public class SaveFileCSV {
 	}
 	
 	public static void main(String[] args) {
-		PersonGrades testPerson = new PersonGrades("Test");
+		Student testPerson = new Student("Test");
 		testPerson.addNewGrade("TestCourse01", "MMM0001", 'B');
 		testPerson.addNewGrade("TestCourse02", "MMM0002", 'C');
 		
