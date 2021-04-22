@@ -6,17 +6,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 public class GradeTest {
-	private Grade testCourse;
+	private Course testCourse;
 	
 	@BeforeEach
 	public void setUp() {
-		testCourse = new Grade("testCourse", "ABC1234", 'C');
+		testCourse = new Course("testCourse", "ABC1234", 'C');
 	}
 	
 	@Test
 	@DisplayName("Initialize a grade.")
 	void testGrade() {
-		Grade testCourseInit = new Grade("testCourse", "ABC1234", 'C', 7.5);
+		Course testCourseInit = new Course("testCourse", "ABC1234", 'C', 7.5);
 		Assertions.assertEquals('C', testCourseInit.getCourseGrade(), "Feil karakter for emnet");
 		Assertions.assertEquals("testCourse", testCourseInit.getCourseName(), "Feil emne navn.");
 		Assertions.assertEquals("ABC1234", testCourseInit.getCourseCode(), "Feil emnekode.");

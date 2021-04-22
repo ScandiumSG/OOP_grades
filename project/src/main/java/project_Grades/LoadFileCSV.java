@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class LoadFileCSV {
 
-	public void load(String fileName, PersonGrades readToObject) throws FileNotFoundException {
+	public void load(String fileName, Student readToObject) throws FileNotFoundException {
 		
 		// Check if the folders exist.
 		File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\");
@@ -21,7 +21,7 @@ public class LoadFileCSV {
 		}
 		
 		try (Scanner CSVParser = new Scanner(mySaveFile)) {
-			Grade newCourse;
+			Course newCourse;
 			char courseGrade;
 			double coursePoints;
 			
@@ -38,7 +38,7 @@ public class LoadFileCSV {
 				String LineFields [] = currentLine.split(",", 4);
 				courseGrade = LineFields[2].charAt(0);
 				coursePoints = Double.parseDouble(LineFields[3]);
-				newCourse = new Grade(LineFields[0], LineFields[1], courseGrade, coursePoints);
+				newCourse = new Course(LineFields[0], LineFields[1], courseGrade, coursePoints);
 				readToObject.addNewGrade(newCourse);
 				}
 			}
@@ -46,7 +46,7 @@ public class LoadFileCSV {
 		}
 	}
 	public static void main(String[] args) {
-		PersonGrades testReading = new PersonGrades("testReading");
+		Student testReading = new Student("testReading");
 		LoadFileCSV load = new LoadFileCSV();
 		try {
 			load.load("TestLoading", testReading);

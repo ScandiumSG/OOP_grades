@@ -1,12 +1,12 @@
 package project_Grades;
 
-public class Grade {
+public class Course {
 	private String courseName;
 	private String courseCode;
 	private double coursePoints = 7.5;
 	private char courseGrade;
 	
-	public Grade(String subjectName, String subjectCode, char subjectGrade, double points) {
+	public Course(String subjectName, String subjectCode, char subjectGrade, double points) {
 		// Validation of course name
 		if (!subjectName.getClass().equals(String.class)) {
 			throw new IllegalArgumentException("Course name must be a string.");
@@ -42,7 +42,7 @@ public class Grade {
 		}
 	}
 	
-	public Grade(String subjectName, String subjectCode, char subjectGrade) {
+	public Course(String subjectName, String subjectCode, char subjectGrade) {
 		// Validation of course name
 		if (!subjectName.getClass().equals(String.class)) {
 			throw new IllegalArgumentException("Course name must be a string.");
@@ -136,15 +136,15 @@ public class Grade {
 	}
 	
 	public static void main(String[] args) {
-		Grade new1 = new Grade("ITGK", "TDT4109", 'B', 7.5);
+		Course new1 = new Course("ITGK", "TDT4109", 'B', 7.5);
 		System.out.println(new1);
-		Grade new2 = new Grade("Webtek", "IT2805", 'A');
+		Course new2 = new Course("Webtek", "IT2805", 'A');
 		System.out.println(new2);
-		Grade new3 = new Grade("Generell Kjemi", "KJ1000", 'B', 15);
+		Course new3 = new Course("Generell Kjemi", "KJ1000", 'B', 15);
 		System.out.println(new3);
 		System.out.println("---");
 		
-		Grade new4 = new Grade("Nanomaterialer", "TMT4100", 'C');
+		Course new4 = new Course("Nanomaterialer", "TMT4100", 'C');
 		System.out.println(new4);
 		new4.setCourseGrade('B');
 		new4.setCourseName("Nanomat");
