@@ -1,8 +1,8 @@
 package project_Grades;
 
+import java.io.FileNotFoundException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -17,16 +17,13 @@ public class GradesController {
 	Pane contentPane;
 	
 	@FXML
+	Pane loadFilePane;
+	
+	@FXML
+	Pane saveFilePane;
+	
+	@FXML
 	TextArea myAverageGradeField;
-	
-	@FXML
-	Tab courseOverview;
-	
-	@FXML
-	Tab gradesGraph;
-	
-	@FXML
-	Tab gradesOverTime;
 	
 	@FXML
 	Button loadFile;
@@ -38,32 +35,64 @@ public class GradesController {
 	Button addCourse;
 	
 	@FXML
+	Button savePaneConfirmButton;
+	
+	@FXML
 	TextField newCourseName;
 	
 	@FXML
 	TextField newCourseCode;
 	
-	@FXML
-	TextField newCourseGrade;
+//	@FXML
+//	ChoiceBox<char> newCourseGrade;
 	
 	@FXML
 	TextField newCoursePoints;
 	
 	@FXML
-	private void addNewCourse() {
-		if (newCoursePoints.getText()=="7.5") {
-		myGrades.addNewGrade(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getText().charAt(0));
-		} else {
-			myGrades.addNewGrade(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getText().charAt(0), Double.valueOf(newCoursePoints.getText()));
-		}
-		calcAverageGrade();
-	}
+	TextField savePaneFileName;
+	
+//	@FXML
+//	private void addNewCourse() {
+//		if (newCoursePoints.getText()=="7.5") {
+//		myGrades.addNewGrade(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getText().charAt(0));
+//		} else {
+//			myGrades.addNewGrade(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getText().charAt(0), Double.valueOf(newCoursePoints.getText()));
+//		}
+//		calcAverageGrade();
+//	}
 	
 	@FXML
 	private void initialize() {
 		myGrades = new PersonGrades("Ny bruker");
 		calcAverageGrade();
 	}
+	
+//	@FXML
+//	private void loadFile() {
+//		LoadFileCSV fileLoader = new LoadFileCSV();
+//		fileLoader.load(fileName, myGrades);
+//	}
+	// TODO Connect loading of file
+	
+	@FXML
+	private void saveFilePaneShow() {
+		saveFilePane.setDisable(true);
+		// TODO make savePane show up
+	}
+	
+	@FXML
+	private void saveFile() {
+		String fileName = savePaneFileName.getText();
+		SaveFileCSV fileSaver = new SaveFileCSV();
+		try {
+			fileSaver.save(fileName, myGrades);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	
 //	@FXML
 //	private void createCourseTiles() {
