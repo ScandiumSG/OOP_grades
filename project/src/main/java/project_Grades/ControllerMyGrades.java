@@ -24,6 +24,9 @@ public class ControllerMyGrades {
 	Pane contentPane;
 	
 	@FXML
+	Pane IOPanes;
+	
+	@FXML
 	Pane loadFilePane;
 	
 	@FXML
@@ -45,6 +48,9 @@ public class ControllerMyGrades {
 	Button savePaneConfirmButton;
 	
 	@FXML
+	Button loadPaneConfirmButton;
+	
+	@FXML
 	TextField newCourseName;
 	
 	@FXML
@@ -60,7 +66,13 @@ public class ControllerMyGrades {
 	TextField savePaneFileName;
 	
 	@FXML
+	TextField loadPaneFileName;
+	
+	@FXML
 	Button CloseSaveFilePaneBtn;
+	
+	@FXML
+	Button CloseLoadFilePaneBtn;
 	
 	@FXML
 	TableView<?> contentTable;
@@ -77,6 +89,9 @@ public class ControllerMyGrades {
 	private void initialize() {
 		myGrades = new Student("Ny bruker");
 		saveFilePaneToggle();
+		loadFilePaneToggle();
+		IOPanes.setDisable(true);
+		IOPanes.toBack();
 		calcAverageGrade();
 		
 		List<String> list = new ArrayList<String>();
@@ -91,25 +106,38 @@ public class ControllerMyGrades {
 		newCourseGrade.setItems(availableChoices);
 	}
 	
-
-	
-//	@FXML
-//	private void loadFile() {
-//		LoadFileCSV fileLoader = new LoadFileCSV();
-//		fileLoader.load(fileName, myGrades);
-//	}
-	// TODO Connect loading of file
 	
 	@FXML
 	private void saveFilePaneToggle() {
 		if (saveFilePane.isDisabled()) {
+			IOPanes.setDisable(false);
+			IOPanes.toFront();
 			saveFilePane.setDisable(false);
 			saveFilePane.setOpacity(1);
 			saveFilePane.toFront();
 		} else if (!saveFilePane.isDisabled()) {
+			IOPanes.setDisable(true);
+			IOPanes.toBack();
 			saveFilePane.setDisable(true);
 			saveFilePane.setOpacity(0);
 			saveFilePane.toBack();
+		}
+	}
+	
+	@FXML
+	private void loadFilePaneToggle() {
+		if (loadFilePane.isDisabled()) {
+			IOPanes.setDisable(false);
+			IOPanes.toFront();
+			loadFilePane.setDisable(false);
+			loadFilePane.setOpacity(1);
+			loadFilePane.toFront(); // Bring the pane to front.
+		} else if (!loadFilePane.isDisabled()) {
+			IOPanes.setDisable(true);
+			IOPanes.toBack();
+			loadFilePane.setDisable(true);
+			loadFilePane.setOpacity(0);
+			loadFilePane.toBack(); // Send the pane all the way back so it doens't interfere with other GUI elements.
 		}
 	}
 	
@@ -119,8 +147,23 @@ public class ControllerMyGrades {
 		SaveFileCSV fileSaver = new SaveFileCSV();
 		try {
 			fileSaver.save(fileName, myGrades);
+			saveFilePaneToggle();
 		} catch (FileNotFoundException e) {
 			// Connect to error pane
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	private void loadFile() {
+		String fileName = loadPaneFileName.getText();
+		LoadFileCSV fileLoader = new LoadFileCSV();
+		try {
+			fileLoader.load(fileName, myGrades);
+			loadFilePaneToggle();
+			calcAverageGrade();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
