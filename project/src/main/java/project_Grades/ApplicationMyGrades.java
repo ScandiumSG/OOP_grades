@@ -10,7 +10,7 @@ public class ApplicationMyGrades extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Parent parent = FXMLLoader.load(getClass().getResource("BasicPanel.fxml"));
+		Parent parent = FXMLLoader.load(getClass().getResource("PrimaryGUI.fxml"));
 		primaryStage.setTitle("Stian K. Gaustad Project - Grades");
 		primaryStage.setScene(new Scene(parent));
 		primaryStage.show();

@@ -9,9 +9,9 @@ public class LoadFileCSV {
 	public void load(String fileName, Student readToObject) throws FileNotFoundException {
 		
 		// Check if the folders exist.
-		File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\");
-		if (!myFilePath.exists()) {
-			throw new FileNotFoundException("No GradesApplication folder found");
+		File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Import\\");
+		if (myFilePath.mkdirs()) {
+			System.out.println("New folder created.");
 		}
 		
 		// Locate the .csv file 
@@ -27,9 +27,8 @@ public class LoadFileCSV {
 			
 			while (CSVParser.hasNextLine()) {
 				String currentLine = CSVParser.nextLine();
-				System.out.println(currentLine);
 				if (currentLine.startsWith("-")) {
-					int startIndex = currentLine.indexOf("PersonName")+10;
+					int startIndex = currentLine.indexOf("PersonName")+11;
 					int endIndex = currentLine.indexOf("*");
 					readToObject.setPersonName(currentLine.substring(startIndex, endIndex));
 				} else if (currentLine.startsWith("_")) {

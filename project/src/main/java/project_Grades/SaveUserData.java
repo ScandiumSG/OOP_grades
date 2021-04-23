@@ -5,16 +5,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class SaveFileCSV {
+public class SaveUserData {
 
-	public void save(String fileName, Student courseCollection) throws FileNotFoundException{
+	public void save(Student studentToSave) throws FileNotFoundException{
 		try {
 			// Make folders if appropriate folders don't exist.
-			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Export\\");
+			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Data\\");
 			if (myFilePath.mkdirs()) {
 				System.out.println("New folder created.");
 			}
 			
+			String fileName = studentToSave.getPersonName();
 			// Make the .csv file 
 			// Based on: https://www.w3schools.com/java/java_files_create.asp
 			File mySaveFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".csv");
@@ -31,12 +32,12 @@ public class SaveFileCSV {
 		
 			// Retrieve information and write to .csv file
 			PrintWriter fileWriter = new PrintWriter(mySaveFile);
-			fileWriter.print("-PersonName: "+courseCollection.getPersonName()+"*");
+			fileWriter.print("-PersonName:"+studentToSave.getPersonName()+"*");
 			fileWriter.println();
 			fileWriter.print("_CourseName,CourseCode,CourseGrade,CoursePoints");
 			fileWriter.println();
-			for (int i = 0; i < courseCollection.getCourseAmount(); i++) {
-				Course currentCourse = courseCollection.getCourse(i);
+			for (int i = 0; i < studentToSave.getCourseAmount(); i++) {
+				Course currentCourse = studentToSave.getCourse(i);
 				String printLine = currentCourse.getCourseName()+","+currentCourse.getCourseCode()+","+String.valueOf(currentCourse.getCourseGrade()+","+String.valueOf(currentCourse.getCoursePoints()));
 				fileWriter.print(printLine);
 				fileWriter.println();
@@ -50,15 +51,13 @@ public class SaveFileCSV {
 	
 	// Allows for deletion of file based on fileName.
 	// Intended use: Tidy up after test files are made with JUnit. No other use currently.
-	public void deleteFile(String fileName) {
+	public void deleteFile(Student studentToDelete) {
 		try {
-			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Export\\");
+			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Data\\");
 			String fullFilePath;
-			if (fileName.contains(".csv")) {
-				fullFilePath = myFilePath.getAbsolutePath()+"\\"+fileName;
-			} else {
-				fullFilePath = myFilePath.getAbsolutePath()+"\\"+fileName+".csv";
-			}
+			String fileName = studentToDelete.getPersonName();
+			
+			fullFilePath = myFilePath.getAbsolutePath()+"\\"+fileName+".csv";
 			File mySaveFile = new File(fullFilePath);
 			if (mySaveFile.delete()) {
 				System.out.println("File \""+fileName+"\" successfully deleted.");
@@ -76,10 +75,10 @@ public class SaveFileCSV {
 		testPerson.addNewGrade("TestCourse01", "MMM0001", 'B');
 		testPerson.addNewGrade("TestCourse02", "MMM0002", 'C');
 		
-		SaveFileCSV mySave = new SaveFileCSV();
+		SaveUserData mySave = new SaveUserData();
 		try {
-			mySave.save("TestSaving", testPerson);
-			mySave.deleteFile("TestSaving");
+			mySave.save(testPerson);
+			mySave.deleteFile(testPerson);
 		} catch (FileNotFoundException e) {
 			System.out.println("File could not be found. Process terminated.");
 			e.printStackTrace();
