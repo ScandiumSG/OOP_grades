@@ -1,17 +1,14 @@
 package project_Grades;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 
 public class ControllerMyGrades {
@@ -19,6 +16,9 @@ public class ControllerMyGrades {
 	
 	@FXML
 	Pane topPane;
+	
+	@FXML
+	Pane bottomPane;
 	
 	@FXML
 	Pane contentPane;
@@ -33,10 +33,56 @@ public class ControllerMyGrades {
 	Pane saveFilePane;
 	
 	@FXML
-	TextArea myAverageGradeField;
+	TextArea gradeTextField;
 	
 	@FXML
-	Button loadFile;
+	TextField userNameField;
+	
+	@FXML
+	TextField userDataSaveStatus;
+	
+	// Change user
+	@FXML
+	TextField newUsername;
+	
+	@FXML
+	Button changeUserBtn;
+	
+	// Start panel
+	@FXML
+	Pane startupPane;
+	
+	@FXML
+	Button 	setInitialSettingsBtn;
+	
+	@FXML
+	TextField initialUserName;
+	
+	// Error panel
+	@FXML
+	Button errorMessageOKBtn;
+	
+	@FXML
+	TextField errorTextHeader;
+	
+	@FXML
+	TextArea errorTextArea;
+	
+	@FXML 
+	Pane errorMessagePane;
+	
+	// Remove course
+	@FXML
+	TextField courseToRemove;
+	
+	@FXML
+	Button removeCourseBtn;
+	
+	@FXML
+	Button loadFileFromCSV;
+	
+	@FXML
+	Button saveFileToCSV;
 	
 	@FXML
 	Button saveFile;
@@ -75,37 +121,85 @@ public class ControllerMyGrades {
 	Button CloseLoadFilePaneBtn;
 	
 	@FXML
-	TableView<?> contentTable;
-	
+	TableView<Course> contentTable;
 	
 	@FXML
-	private void addNewCourse() {
-		myGrades.addNewGrade(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getSelectionModel().getSelectedItem().charAt(0), Double.valueOf(newCoursePoints.getText()));
-		newCourseName.setText(null); newCourseCode.setText(null); newCourseGrade.setValue(null); newCoursePoints.setText(null);
-		calcAverageGrade();
-	}
+	TableColumn<Course, String> courseCodeColumn;
+	
+	@FXML
+	TableColumn<Course, String> courseNameColumn;
+	
+	@FXML
+	TableColumn<Course, String> courseGradeColumn;
+	
+	@FXML
+	TableColumn<Course, String> coursePointsColumn;
 	
 	@FXML
 	private void initialize() {
-		myGrades = new Student("Ny bruker");
+		startupPane.toFront();
 		saveFilePaneToggle();
 		loadFilePaneToggle();
 		IOPanes.setDisable(true);
 		IOPanes.toBack();
-		calcAverageGrade();
-		
-		List<String> list = new ArrayList<String>();
-		list.add("A");
-		list.add("B");
-		list.add("C");
-		list.add("D");
-		list.add("E");
-		list.add("F");
-		
-		ObservableList<String> availableChoices = FXCollections.observableArrayList(list);
-		newCourseGrade.setItems(availableChoices);
+		newCourseGrade.setItems(OptionsController.getValidGrades());
 	}
 	
+	@FXML
+	private void closeStartupPane() {
+//		Pane startupPane;
+//		Button 	setInitialSettingsBtn;
+//		TextField initialUserName;
+		myGrades = new Student(initialUserName.getText());
+		loadUserData();
+		startupPane.toBack();
+		startupPane.setOpacity(0);
+		reloadGUI();
+	}
+	
+	@FXML
+	private void addNewCourse() {
+		OptionsController.addCourseToStudent(newCourseName, newCourseCode, newCourseGrade, newCoursePoints, myGrades);
+		reloadGUI();
+	}
+	
+	@FXML
+	private void removeCourse() {
+//		TextField courseToRemove;
+//		Button removeCourseBtn;
+		System.out.println("Button pressed.");
+		myGrades.removeCourse(OptionsController.findCourseOnCode(courseToRemove, myGrades));
+		reloadGUI();
+	}
+	
+	@FXML
+	private void closeErrorMessagePane() {
+//		Button errorMessageOKBtn;
+//		TextField errorTextHeader;
+//		TextArea errorTextArea;
+//		Pane errorMessagePane;
+		
+		errorMessagePane.toBack();
+		errorMessagePane.setOpacity(0);
+		errorTextHeader.clear();
+		errorTextArea.clear();
+	}
+	
+	private void showErrorMessage(String errorHeader, String errorMessage) {
+		errorMessagePane.toFront();
+		errorMessagePane.setOpacity(1);
+		errorTextHeader.setText(errorHeader);
+		errorTextArea.setText(errorMessage);
+	}
+	
+	@FXML
+	private void changeUserAccount() {
+//		TextField newUsername;
+//		Button changeUserBtn;
+		myGrades = new Student(newUsername.getText());
+		loadUserData();
+		reloadGUI();
+	}
 	
 	@FXML
 	private void saveFilePaneToggle() {
@@ -148,8 +242,9 @@ public class ControllerMyGrades {
 		try {
 			fileSaver.save(fileName, myGrades);
 			saveFilePaneToggle();
+			reloadGUI();
 		} catch (FileNotFoundException e) {
-			// Connect to error pane
+			showErrorMessage("Feil", "Noe gikk galt som hindret oss å lagre filen "+fileName+".\nPrøv igjen.");
 			e.printStackTrace();
 		}
 	}
@@ -161,19 +256,73 @@ public class ControllerMyGrades {
 		try {
 			fileLoader.load(fileName, myGrades);
 			loadFilePaneToggle();
-			calcAverageGrade();
+			reloadGUI();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			showErrorMessage(fileName+" ikke funnet.", "Filen "+fileName+" ble ikke funnet.\nSjekk om du skrev inn riktig navn og prøv igjen.");
 			e.printStackTrace();
 		}
 	}
 	
 	@FXML
-	void calcAverageGrade() {
-		if (myGrades.getCourseAmount()==-1) {
-			myAverageGradeField.setText("Hei, "+myGrades.getPersonName()+".\n\nDu har ingen registerte emner.");
-		} else {
-			myAverageGradeField.setText("Hei, "+myGrades.getPersonName()+".\n\n Din gjennomsnittskarakter er: "+myGrades.getAverageGrade());
+	private void saveUserData() {
+		SaveUserData dataSaver = new SaveUserData();
+		try {
+			dataSaver.save(myGrades);
+			reloadGUI();
+			userDataSaveStatus.setText("Lagret");
+		} catch (FileNotFoundException e) {
+			showErrorMessage("Kunne ikke lagre", "Noe gikk galt under lagringen av data. Vennligst prøv igjen senere.");
+			e.printStackTrace();
 		}
+	}
+	
+	@FXML
+	private void loadUserData() {
+		LoadUserData dataLoader = new LoadUserData();
+		try {
+			dataLoader.load(myGrades);
+		} catch (FileNotFoundException e) {
+			showErrorMessage("Data for den brukeren ikke funnet.", "Kunne ikke finne data for denne brukeren.\nSjekk om du har skrevet inn riktig navn og prøv igjen.");
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	private void reloadGUI() {
+		printCourseInfo();
+		initTableView();
+		closeErrorMessagePane();
+		newCourseCode.clear();
+		newCourseName.clear();
+		newCourseGrade.getSelectionModel().clearSelection();
+		newCoursePoints.clear();
+		userDataSaveStatus.clear();
+		loadPaneFileName.clear();
+		savePaneFileName.clear();
+		newUsername.clear();
+		courseToRemove.clear();
+	}
+	
+	@FXML
+	void printCourseInfo() {
+		userNameField.setText(OptionsController.getUserMessage(myGrades));
+		gradeTextField.setText(OptionsController.getCalculationMessage(myGrades));
+	}
+	
+	@FXML
+	public void initTableView() {
+//		TableView name and columns:
+//		TableView<Course> contentTable;
+//		TableColumn<Course, String> courseCodeColumn;
+//		TableColumn<Course, String> courseNameColumn;
+//		TableColumn<Course, String> courseGradeColumn;
+//		TableColumn<Course, String> coursePointsColumn;
+		
+		courseCodeColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("courseCode"));
+		courseNameColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("courseName"));
+		courseGradeColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("courseGrade"));
+		coursePointsColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("coursePoints"));
+		
+		contentTable.setItems(OptionsController.getListOfCourses(myGrades));
 	}
 }

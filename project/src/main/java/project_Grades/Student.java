@@ -89,7 +89,7 @@ public class Student {
 	public char getWorstGrade() {
 		char worstGrade = 'A'; // fixed value set since this is best allowed grade.
 		for (Course thisCourse: myGrades) {
-			if (thisCourse.getCourseGrade() > worstGrade) {
+			if (thisCourse.getCourseGrade() > worstGrade && thisCourse.getCourseGrade() != 'X') {
 				worstGrade = thisCourse.getCourseGrade();
 			}
 		}
@@ -99,7 +99,7 @@ public class Student {
 	public char getBestGrade() {
 		char bestGrade = 'F'; // fixed value set since this is worst allowed grade. 
 		for (Course thisCourse: myGrades) {
-			if (thisCourse.getCourseGrade() < bestGrade) {
+			if (thisCourse.getCourseGrade() < bestGrade && thisCourse.getCourseGrade() != 'X') {
 				bestGrade = thisCourse.getCourseGrade();
 			}
 		}
