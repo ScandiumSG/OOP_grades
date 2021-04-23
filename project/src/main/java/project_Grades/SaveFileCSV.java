@@ -31,7 +31,7 @@ public class SaveFileCSV {
 		
 			// Retrieve information and write to .csv file
 			PrintWriter fileWriter = new PrintWriter(mySaveFile);
-			fileWriter.print("-PersonName: "+courseCollection.getPersonName()+"*");
+			fileWriter.print("::PersonName: "+courseCollection.getPersonName()+";");
 			fileWriter.println();
 			fileWriter.print("_CourseName,CourseCode,CourseGrade,CoursePoints");
 			fileWriter.println();

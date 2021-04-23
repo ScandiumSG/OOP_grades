@@ -27,18 +27,21 @@ public class LoadFileCSV {
 			
 			while (CSVParser.hasNextLine()) {
 				String currentLine = CSVParser.nextLine();
-				if (currentLine.startsWith("-")) {
+				System.out.println(currentLine);
+				if (currentLine.startsWith("::")) {
 					int startIndex = currentLine.indexOf("PersonName")+11;
-					int endIndex = currentLine.indexOf("*");
+					int endIndex = currentLine.indexOf(";");
 					readToObject.setPersonName(currentLine.substring(startIndex, endIndex));
+					continue;
 				} else if (currentLine.startsWith("_")) {
 					continue;
 				} else {
-				String LineFields [] = currentLine.split(",", 4);
-				courseGrade = LineFields[2].charAt(0);
-				coursePoints = Double.parseDouble(LineFields[3]);
-				newCourse = new Course(LineFields[0], LineFields[1], courseGrade, coursePoints);
-				readToObject.addNewGrade(newCourse);
+					// Substrings trimmed incase user input a file with trailing or leading whitespace.
+					String LineFields [] = currentLine.split(",", 4);
+					courseGrade = LineFields[2].trim().charAt(0);
+					coursePoints = Double.parseDouble(LineFields[3].trim());
+					newCourse = new Course(LineFields[0].trim(), LineFields[1].trim(), courseGrade, coursePoints);
+					readToObject.addNewGrade(newCourse);
 				}
 			}
 			CSVParser.close();
