@@ -9,12 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 
 public class LoadUserDataTest {
 	private Student testPerson;
-	private LoadUserData fileLoader;
+	private SaveUserData fileLoader;
 	
 	@BeforeEach
 	public void setUp() throws FileNotFoundException, IOException {
 		testPerson = new Student("Ola Nordmann");
-		fileLoader = new LoadUserData();
+		fileLoader = new SaveUserData();
 		fileLoader.load(testPerson);
 	}
 	

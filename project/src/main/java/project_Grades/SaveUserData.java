@@ -4,16 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Scanner;
 
-public class SaveUserData {
+public class SaveUserData implements InternalSaveHandler{
 
-	/**
-	 * Print all courses in the Student object sent to a .MGD file in the User/GradesApplication/UserData folder.
-	 * @param fileName A string that specifies what the name of the output .MGD will be called.
-	 * @param studentToSave The Student object we wish to convert into a .MGD file.
-	 * @throws FileNotFoundException If file not found
-	 * @throws IOException If program cannot make a new file or cannot make required folders. Check if area is writeable.
-	 */
 	public void save(Student studentToSave) throws FileNotFoundException, IOException{
 			// Make folders if appropriate folders don't exist.
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\UserData\\");
@@ -51,11 +45,6 @@ public class SaveUserData {
 	
 	// Allows for deletion of file based on fileName.
 	// Intended use: Tidy up after test files are made with JUnit. No other use currently.
-	/**
-	 * A method to delete a specific file in the User/GradesApplication/UserData folder. Intended only for testing purposes. 
-	 * @param fileName The name of the file you wish to delete.
-	 * @throws FileNotFoundException If the entered fileName does no correspond to a existing file.
-	 */
 	public void deleteFile(Student studentToDelete) throws FileNotFoundException, IOException{
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\UserData\\");
 			String fullFilePath;
@@ -70,6 +59,42 @@ public class SaveUserData {
 			} else {
 //				System.out.println("File \""+fileName+"\" successfully deleted.");
 			}
+	}
+	
+	public void load(Student readToStudent) throws FileNotFoundException {
+		// Check if the folders exist.
+		File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\UserData\\");
+		if (myFilePath.mkdirs()) {
+			System.out.println("Data folder not found. New folder created.");
+		}
+		
+		String fileName = readToStudent.getPersonName();
+		fileName = fileName.replace(" ", "_");
+		// Locate the .csv file 
+		File userDataFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".MGD");
+		if (!userDataFile.exists()) {
+			throw new FileNotFoundException("Could not find this file.");
+		} else if (userDataFile.exists()) {
+			try (Scanner userDataParser = new Scanner(userDataFile)) {
+				Course newCourse;
+				double coursePoints;
+				while (userDataParser.hasNextLine()) {
+					String currentLine = userDataParser.nextLine();
+					if (currentLine.startsWith("ID")) {
+						int startIndexID = "ID:".length();
+						int endIndexID = currentLine.indexOf(";");
+						String parsedStudentName = (currentLine.substring(startIndexID, endIndexID)).replace("_", " ");
+						readToStudent.setPersonName(parsedStudentName);
+						continue;
+					}
+					String dataFields[] = currentLine.split("::");
+					coursePoints = Double.parseDouble(dataFields[3]);
+					newCourse = new Course(dataFields[0], dataFields[1], dataFields[2], coursePoints);
+					readToStudent.addNewGrade(newCourse);
+				}
+				userDataParser.close();
+			}
+		}
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {

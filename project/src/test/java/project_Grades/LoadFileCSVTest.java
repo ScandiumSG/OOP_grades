@@ -10,13 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 public class LoadFileCSVTest {
 	private Student testPerson = new Student("loadTestCSV");
 	private String fileName;
-	private LoadFileCSV fileLoader;
+	private SaveFileCSV fileLoader;
 	
 	@BeforeEach
 	public void setUp() throws FileNotFoundException, IOException {
 		testPerson = new Student("loadTestCSV");
 		fileName = "TestLoading";
-		fileLoader = new LoadFileCSV();
+		fileLoader = new SaveFileCSV();
 		fileLoader.load(fileName, testPerson);
 	}
 	

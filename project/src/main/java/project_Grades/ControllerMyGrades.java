@@ -277,7 +277,7 @@ public class ControllerMyGrades {
 	@FXML
 	private void loadFile() {
 		String fileName = loadPaneFileName.getText();
-		LoadFileCSV fileLoader = new LoadFileCSV();
+		SaveFileCSV fileLoader = new SaveFileCSV();
 		try {
 			fileLoader.load(fileName, myGrades);
 			loadFilePaneToggle();
@@ -321,7 +321,7 @@ public class ControllerMyGrades {
 	
 	@FXML
 	private void loadUserData() {
-		LoadUserData dataLoader = new LoadUserData();
+		SaveUserData dataLoader = new SaveUserData();
 		try {
 			dataLoader.load(myGrades);
 		} catch (FileNotFoundException e) {

@@ -4,15 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Scanner;
 
-public class SaveFileCSV {
+public class SaveFileCSV implements SaveHandler{
 
-	/**
-	 * Print all courses in the Student object sent to a .csv file in the User/GradesApplication/Export folder.
-	 * @param fileName A string that specifies what the name of the output .csv will be called.
-	 * @param courseCollection The Student object we wish to convert into a .csv file.
-	 * @throws IOException If the write area is inaccessable or read-only a IOException will be thrown.
-	 */
 	public void save(String fileName, Student courseCollection) throws IOException{
 			// Make folders if appropriate folders don't exist.
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Export\\");
@@ -55,11 +50,6 @@ public class SaveFileCSV {
 	
 	// Allows for deletion of file based on fileName.
 	// Intended use: Tidy up after test files are made with JUnit. No other use currently.
-	/**
-	 * A method to delete a specific file in the User/GradesApplication/Export folder. Intended only for testing purposes. 
-	 * @param fileName The name of the file you wish to delete.
-	 * @throws FileNotFoundException If the entered fileName does no correspond to a existing file.
-	 */
 	public void deleteFile(String fileName) throws FileNotFoundException {
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Export\\");
 			String fullFilePath;
@@ -79,6 +69,45 @@ public class SaveFileCSV {
 			mySaveFile.deleteOnExit();
 	}
 	
+	public void load(String fileName, Student readToObject) throws FileNotFoundException, IOException {
+		// Check if the folders exist.
+		File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Import\\");
+		if (myFilePath.mkdirs()) {
+			System.out.println("New folder created.");
+		} else if (!myFilePath.exists()) {
+			throw new IOException("Could not find or create Import folder.");
+		}
+		
+		// Locate the .csv file 
+		File mySaveFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".csv");
+		if (!mySaveFile.exists()) {
+			throw new FileNotFoundException("File not found!");
+		}
+		
+		try (Scanner CSVParser = new Scanner(mySaveFile)) {
+			Course newCourse;
+			double coursePoints;
+			while (CSVParser.hasNextLine()) {
+				String currentLine = CSVParser.nextLine();
+				if (currentLine.startsWith("::")) {
+					int startIndex = currentLine.indexOf("PersonName")+11;
+					int endIndex = currentLine.indexOf(";");
+					readToObject.setPersonName(currentLine.substring(startIndex, endIndex));
+					continue;
+				} else if (currentLine.startsWith("_")) {
+					continue;
+				} else {
+					// Substrings trimmed incase user input a file with trailing or leading whitespace.
+					String LineFields [] = currentLine.split(",", 4);
+					coursePoints = Double.parseDouble(LineFields[3].trim());
+					newCourse = new Course(LineFields[0].trim(), LineFields[1].trim(), LineFields[2].trim(), coursePoints);
+					readToObject.addNewGrade(newCourse);
+				}
+			}
+			CSVParser.close();
+		}
+	}
+	
 	public static void main(String[] args) {
 		Student testPerson = new Student("Test");
 		testPerson.addNewGrade("TestCourse01", "MMM0001", "B");
@@ -93,6 +122,17 @@ public class SaveFileCSV {
 			e.printStackTrace();
 		} catch (IOException f) {
 			
+		}
+		
+		Student testReading = new Student("testReading");
+		SaveFileCSV load = new SaveFileCSV();
+		try {
+			load.load("TestLoading", testReading);
+		} catch (FileNotFoundException e) {
+			System.out.println("File could not be found. Process terminated.");
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
