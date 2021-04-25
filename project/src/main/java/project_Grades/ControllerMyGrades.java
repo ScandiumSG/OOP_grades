@@ -1,6 +1,8 @@
 package project_Grades;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -13,6 +15,7 @@ import javafx.scene.layout.Pane;
 
 public class ControllerMyGrades {
 	private Student myGrades;
+	private OptionsController options = new OptionsController();
 	
 	@FXML
 	Pane topPane;
@@ -142,7 +145,7 @@ public class ControllerMyGrades {
 		loadFilePaneToggle();
 		IOPanes.setDisable(true);
 		IOPanes.toBack();
-		newCourseGrade.setItems(OptionsController.getValidGrades());
+		newCourseGrade.setItems(options.getValidGrades());
 	}
 	
 	@FXML
@@ -150,26 +153,37 @@ public class ControllerMyGrades {
 //		Pane startupPane;
 //		Button 	setInitialSettingsBtn;
 //		TextField initialUserName;
-		myGrades = new Student(initialUserName.getText());
-		loadUserData();
-		startupPane.toBack();
-		startupPane.setOpacity(0);
-		reloadGUI();
+		try {
+			myGrades = new Student(initialUserName.getText());
+			loadUserData();
+			startupPane.toBack();
+			startupPane.setOpacity(0);
+			reloadGUI();
+		} catch (IllegalArgumentException e) {
+			showErrorMessage("Ugyldig brukernavn", "Du må skrive inn et brukernavn før du kan bytte bruker.");
+		}
 	}
 	
 	@FXML
 	private void addNewCourse() {
-		OptionsController.addCourseToStudent(newCourseName, newCourseCode, newCourseGrade, newCoursePoints, myGrades);
-		reloadGUI();
+		try {
+			options.addCourseToStudent(newCourseName, newCourseCode, newCourseGrade, newCoursePoints, myGrades);
+			reloadGUI();
+		} catch (IllegalArgumentException e) {
+			showErrorMessage("Ugyldig emneinformasjon", "Oppgitt emneinformasjon var feil.\nVennligst fyll ut på nytt og prøv igjen.");
+		}
 	}
 	
 	@FXML
 	private void removeCourse() {
 //		TextField courseToRemove;
 //		Button removeCourseBtn;
-		System.out.println("Button pressed.");
-		myGrades.removeCourse(OptionsController.findCourseOnCode(courseToRemove, myGrades));
-		reloadGUI();
+		try {
+			myGrades.removeCourse(options.findCourseOnCode(courseToRemove, myGrades));
+			reloadGUI();
+		} catch (IllegalArgumentException e) {
+			showErrorMessage("Ugyldig emnekode", "Kunne ikke finne \""+courseToRemove.getText()+"\" i listen over emner for "+myGrades.getPersonName()+".\nKontroller om du skrev inn riktig emnekode og prøv på nytt.");
+		}
 	}
 	
 	@FXML
@@ -196,9 +210,14 @@ public class ControllerMyGrades {
 	private void changeUserAccount() {
 //		TextField newUsername;
 //		Button changeUserBtn;
-		myGrades = new Student(newUsername.getText());
-		loadUserData();
-		reloadGUI();
+		System.out.println(newUsername.getText());
+		try {
+			myGrades = new Student(newUsername.getText());
+			loadUserData();
+			reloadGUI();
+		} catch (IllegalArgumentException e) {
+			showErrorMessage("Ugyldig brukernavn", "Du må skrive inn et brukernavn før du kan bytte bruker.");
+		}
 	}
 	
 	@FXML
@@ -243,9 +262,15 @@ public class ControllerMyGrades {
 			fileSaver.save(fileName, myGrades);
 			saveFilePaneToggle();
 			reloadGUI();
-		} catch (FileNotFoundException e) {
-			showErrorMessage("Feil", "Noe gikk galt som hindret oss å lagre filen "+fileName+".\nPrøv igjen.");
-			e.printStackTrace();
+		} catch (IOException f) {
+			try  {
+				fileSaver.save(fileName, myGrades);
+				saveFilePaneToggle();
+				reloadGUI();
+			} catch(IOException g) {
+				showErrorMessage("Feil", "Noe gikk galt som hindret oss å lage filen "+fileName+".\nKontroller at filplassering er skrivbar og prøv igjen.");
+				g.printStackTrace();
+			}
 		}
 	}
 	
@@ -260,6 +285,15 @@ public class ControllerMyGrades {
 		} catch (FileNotFoundException e) {
 			showErrorMessage(fileName+" ikke funnet.", "Filen "+fileName+" ble ikke funnet.\nSjekk om du skrev inn riktig navn og prøv igjen.");
 			e.printStackTrace();
+		} catch (IOException f) {
+			try  {
+				fileLoader.load(fileName, myGrades);
+				saveFilePaneToggle();
+				reloadGUI();
+			} catch(IOException g) {
+				showErrorMessage("Feil", "Noe gikk galt som hindret oss å hente filen "+fileName+".\nKontroller at filplassering er lesbar, at du skrev filnavn riktig, og prøv igjen.");
+				g.printStackTrace();
+			}
 		}
 	}
 	
@@ -273,6 +307,15 @@ public class ControllerMyGrades {
 		} catch (FileNotFoundException e) {
 			showErrorMessage("Kunne ikke lagre", "Noe gikk galt under lagringen av data. Vennligst prøv igjen senere.");
 			e.printStackTrace();
+		} catch (IOException f) {
+			try  {
+				dataSaver.save(myGrades);
+				saveFilePaneToggle();
+				reloadGUI();
+			} catch(IOException g) {
+				showErrorMessage("Feil", "Noe gikk galt som hindret oss å lage filen "+myGrades.getPersonName()+".\nKontroller at filplassering er skrivbar og prøv igjen.");
+				g.printStackTrace();
+			}
 		}
 	}
 	
@@ -282,7 +325,7 @@ public class ControllerMyGrades {
 		try {
 			dataLoader.load(myGrades);
 		} catch (FileNotFoundException e) {
-			showErrorMessage("Data for den brukeren ikke funnet.", "Kunne ikke finne data for denne brukeren.\nSjekk om du har skrevet inn riktig navn og prøv igjen.");
+			showErrorMessage("Data for "+myGrades.getPersonName()+" ikke funnet.", "Kunne ikke finne data for "+myGrades.getPersonName()+".\nSjekk om du har skrevet inn riktig navn og prøv igjen.");
 			e.printStackTrace();
 		}
 	}
@@ -305,8 +348,8 @@ public class ControllerMyGrades {
 	
 	@FXML
 	void printCourseInfo() {
-		userNameField.setText(OptionsController.getUserMessage(myGrades));
-		gradeTextField.setText(OptionsController.getCalculationMessage(myGrades));
+		userNameField.setText(options.getUserMessage(myGrades));
+		gradeTextField.setText(options.getCalculationMessage(myGrades));
 	}
 	
 	@FXML
@@ -323,6 +366,6 @@ public class ControllerMyGrades {
 		courseGradeColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("courseGrade"));
 		coursePointsColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("coursePoints"));
 		
-		contentTable.setItems(OptionsController.getListOfCourses(myGrades));
+		contentTable.setItems(options.getListOfCourses(myGrades));
 	}
 }

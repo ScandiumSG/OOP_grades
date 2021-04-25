@@ -113,14 +113,14 @@ public class Course {
 	 * @throws IllegalArgumentException if the new String inputGrade = null.
 	 */
 	public void setCourseGrade(String inputGrade) {
-		if (!"ABCDEF".contains(inputGrade) && (!"abcdef".contains(inputGrade))) {
-			throw new IllegalArgumentException("Invalid grade input, must be a char in range A-F.");
-		} else if ("abcdef".contains(String.valueOf(inputGrade))) {
+		if (inputGrade.toLowerCase().equals("bestått")) {
+			courseGrade = "Bestått";
+		} else if ((!"ABCDEF".contains(inputGrade)) && (!"abcdef".contains(inputGrade))) {
+			throw new IllegalArgumentException("Invalid grade input, must be a grade in range A-F or \"Bestått\".");
+		} else if ("abcdef".contains(inputGrade)) {
 			courseGrade = inputGrade.toUpperCase();
-			return;
 		} else {
 			courseGrade = inputGrade;
-			return;
 		}
 	}
 	

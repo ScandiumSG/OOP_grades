@@ -24,7 +24,7 @@ public class LoadUserData {
 		// Locate the .csv file 
 		File userDataFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".MGD");
 		if (!userDataFile.exists()) {
-			System.out.println("No user associated with that name.");
+			throw new FileNotFoundException("Could not find this file.");
 		} else if (userDataFile.exists()) {
 			try (Scanner userDataParser = new Scanner(userDataFile)) {
 				Course newCourse;

@@ -11,28 +11,30 @@ public class SaveFileCSV {
 	 * Print all courses in the Student object sent to a .csv file in the User/GradesApplication/Export folder.
 	 * @param fileName A string that specifies what the name of the output .csv will be called.
 	 * @param courseCollection The Student object we wish to convert into a .csv file.
-	 * @throws FileNotFoundException If file not found
+	 * @throws IOException If the write area is inaccessable or read-only a IOException will be thrown.
 	 */
-	public void save(String fileName, Student courseCollection) throws FileNotFoundException{
-		try {
+	public void save(String fileName, Student courseCollection) throws IOException{
 			// Make folders if appropriate folders don't exist.
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Export\\");
 			if (myFilePath.mkdirs()) {
 				System.out.println("New folder created.");
+			} else if (!myFilePath.exists()) {
+				throw new IOException("Unable to create a new folder.");
 			}
 			
 			// Make the .csv file 
 			// Based on: https://www.w3schools.com/java/java_files_create.asp
-			File mySaveFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".csv");
-			try {
-				if (mySaveFile.createNewFile()) {
-					System.out.println("File made: "+mySaveFile.getName());
-				} else {
-					System.out.println("The file already existed.");
-				}
-			} catch (IOException e) {
-				System.out.println("Error in creation of new file.");
-				e.printStackTrace();
+			File mySaveFile;
+			if (fileName.contains(".csv")) {
+				mySaveFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName);
+			} else {
+				mySaveFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".csv");
+			}
+			
+			if (mySaveFile.createNewFile()) {
+				System.out.println("File made: "+mySaveFile.getName());
+			} else {
+				System.out.println("The file already existed.");
 			}
 		
 			// Retrieve information and write to .csv file
@@ -49,10 +51,7 @@ public class SaveFileCSV {
 			}
 			// Close the fileWriter
 			fileWriter.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
-	}
 	
 	// Allows for deletion of file based on fileName.
 	// Intended use: Tidy up after test files are made with JUnit. No other use currently.
@@ -61,8 +60,7 @@ public class SaveFileCSV {
 	 * @param fileName The name of the file you wish to delete.
 	 * @throws FileNotFoundException If the entered fileName does no correspond to a existing file.
 	 */
-	public void deleteFile(String fileName) {
-		try {
+	public void deleteFile(String fileName) throws FileNotFoundException {
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Export\\");
 			String fullFilePath;
 			if (fileName.contains(".csv")) {
@@ -71,15 +69,14 @@ public class SaveFileCSV {
 				fullFilePath = myFilePath.getAbsolutePath()+"\\"+fileName+".csv";
 			}
 			File mySaveFile = new File(fullFilePath);
-			if (mySaveFile.delete()) {
-				System.out.println("File \""+fileName+"\" successfully deleted.");
-			} else {
+			if (!mySaveFile.exists()) {
+				throw new FileNotFoundException("The file you attempted to delete does not exist!");
+			} else if (!mySaveFile.delete()) {
 				throw new FileNotFoundException("Could not delete file \""+fileName+"\"");
+			} else {
+				System.out.println("File \""+fileName+"\" successfully deleted.");
 			}
 			mySaveFile.deleteOnExit();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public static void main(String[] args) {
@@ -94,6 +91,8 @@ public class SaveFileCSV {
 		} catch (FileNotFoundException e) {
 			System.out.println("File could not be found. Process terminated.");
 			e.printStackTrace();
+		} catch (IOException f) {
+			
 		}
 	}
 }

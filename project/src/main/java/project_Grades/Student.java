@@ -19,8 +19,8 @@ public class Student {
 	 * @throws IllegalArgumentException if the String name = null.
 	 */
 	public Student(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("Person name cannot be 'null'");
+		if (name.equals(null) || name.equals("")) {
+			throw new IllegalArgumentException("Person name cannot be 'null' or blank");
 		} else {
 			this.studentName = name;
 		}
@@ -116,8 +116,8 @@ public class Student {
 	 * @throws IllegalArgumentException if input name = null.
 	 */
 	public void setPersonName(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("Person name cannot be 'null'");
+		if (name.equals(null) || name.equals("")) {
+			throw new IllegalArgumentException("Person name cannot be 'null' or blank");
 		} else {
 			this.studentName = name;
 		}

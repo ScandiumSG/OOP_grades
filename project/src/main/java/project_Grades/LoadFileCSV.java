@@ -2,6 +2,7 @@ package project_Grades;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class LoadFileCSV {
@@ -11,13 +12,16 @@ public class LoadFileCSV {
 	 * @param fileName The name of the .csv file that is read from User/GradesApplication/Import folder.
 	 * @param readToObject The student Object that will add the read data.
 	 * @throws FileNotFoundException If file not found
+	 * @throws IOException If program cannot make required folders. Check if area is writeable.
 	 */
-	public void load(String fileName, Student readToObject) throws FileNotFoundException {
+	public void load(String fileName, Student readToObject) throws FileNotFoundException, IOException {
 		
 		// Check if the folders exist.
 		File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\Import\\");
 		if (myFilePath.mkdirs()) {
 			System.out.println("New folder created.");
+		} else if (!myFilePath.exists()) {
+			throw new IOException("Could not find or create Import folder.");
 		}
 		
 		// Locate the .csv file 
@@ -31,7 +35,6 @@ public class LoadFileCSV {
 			double coursePoints;
 			while (CSVParser.hasNextLine()) {
 				String currentLine = CSVParser.nextLine();
-				System.out.println(currentLine);
 				if (currentLine.startsWith("::")) {
 					int startIndex = currentLine.indexOf("PersonName")+11;
 					int endIndex = currentLine.indexOf(";");
@@ -50,17 +53,13 @@ public class LoadFileCSV {
 			CSVParser.close();
 		}
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Student testReading = new Student("testReading");
 		LoadFileCSV load = new LoadFileCSV();
-		try {
 			load.load("TestLoading", testReading);
 			System.out.println("Courses read:");
 			for (int i = 0; i < testReading.getCourseAmount(); i++) {
 				System.out.println(testReading.getCourse(i).toString());
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 }

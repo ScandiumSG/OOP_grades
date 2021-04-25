@@ -10,7 +10,7 @@ import javafx.scene.control.TextField;
 
 public class OptionsController {
 
-	public static ObservableList<String> getValidGrades() {
+	public ObservableList<String> getValidGrades() {
 		List<String> list = new ArrayList<String>();
 		list.add("A");
 		list.add("B");
@@ -24,12 +24,12 @@ public class OptionsController {
 		return availableChoices;
 	}
 	
-	public static String getUserMessage(Student myGrades) {
+	public String getUserMessage(Student myGrades) {
 		String outputMessage = "Hei, "+myGrades.getPersonName();
 		return outputMessage;
 	}
 	
-	public static String getCalculationMessage(Student myGrades) {
+	public String getCalculationMessage(Student myGrades) {
 		String outputMessage;
 		if (myGrades.getCourseAmount()==-1) {
 			outputMessage = "\nDu har ingen registerte emner.";
@@ -39,7 +39,7 @@ public class OptionsController {
 		return outputMessage;
 	}
 	
-	public static ObservableList<Course> getListOfCourses(Student myGrades) {
+	public ObservableList<Course> getListOfCourses(Student myGrades) {
 		ObservableList<Course> listedCourses = FXCollections.observableArrayList();
 		for (int i = 0; i < myGrades.getCourseAmount(); i++) {
 			listedCourses.add(myGrades.getCourse(i));
@@ -55,7 +55,7 @@ public class OptionsController {
 	 * @param newCoursePoints A textfield containing the new course point.
 	 * @param myGrades The Student object that the course is added to.
 	 */
-	public static void addCourseToStudent(TextField newCourseName, TextField newCourseCode, ChoiceBox<String> newCourseGrade, TextField newCoursePoints, Student myGrades) {
+	public void addCourseToStudent(TextField newCourseName, TextField newCourseCode, ChoiceBox<String> newCourseGrade, TextField newCoursePoints, Student myGrades) {
 		double coursePoints = Double.valueOf(newCoursePoints.getText());
 		Course addedCourse = new Course(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getSelectionModel().getSelectedItem(), coursePoints);
 		myGrades.addNewGrade(addedCourse);
@@ -67,7 +67,7 @@ public class OptionsController {
 	 * @param myGrades The student object that is searched through for the Course.
 	 * @return
 	 */
-	public static Course findCourseOnCode(TextField findThisCourse, Student myGrades) {
+	public Course findCourseOnCode(TextField findThisCourse, Student myGrades) throws IllegalArgumentException{
 		Course targetCourse = null;
 		for (int i = 0; i < myGrades.getCourseAmount(); i++) {
 			if (myGrades.getCourse(i).getCourseCode().equals((findThisCourse.getText()).trim())) {

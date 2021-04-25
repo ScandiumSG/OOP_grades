@@ -10,15 +10,17 @@ public class SaveUserData {
 	/**
 	 * Print all courses in the Student object sent to a .MGD file in the User/GradesApplication/UserData folder.
 	 * @param fileName A string that specifies what the name of the output .MGD will be called.
-	 * @param courseCollection The Student object we wish to convert into a .MGD file.
+	 * @param studentToSave The Student object we wish to convert into a .MGD file.
 	 * @throws FileNotFoundException If file not found
+	 * @throws IOException If program cannot make a new file or cannot make required folders. Check if area is writeable.
 	 */
-	public void save(Student studentToSave) throws FileNotFoundException{
-		try {
+	public void save(Student studentToSave) throws FileNotFoundException, IOException{
 			// Make folders if appropriate folders don't exist.
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\UserData\\");
 			if (myFilePath.mkdirs()) {
 				System.out.println("New folder created.");
+			} else if (!myFilePath.exists()) {
+				throw new IOException("Unable to create a new folder.");
 			}
 			
 			String fileName = studentToSave.getPersonName();
@@ -26,17 +28,11 @@ public class SaveUserData {
 			// Make the .csv file 
 			// Based on: https://www.w3schools.com/java/java_files_create.asp
 			File mySaveFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".MGD");
-			try {
-				if (mySaveFile.createNewFile()) {
-					System.out.println("File made: "+mySaveFile.getName());
-				} else {
-					System.out.println("The file already existed. Overrode data with new student data");
-					this.deleteFile(studentToSave);
-					this.save(studentToSave);
-				}
-			} catch (IOException e) {
-				System.out.println("Error in creation of new file.");
-				e.printStackTrace();
+			if (mySaveFile.exists()) {
+				this.deleteFile(studentToSave);
+				this.save(studentToSave);
+			} else if (!mySaveFile.createNewFile()) {
+				throw new IOException("Could not create a new user data file.");
 			}
 		
 			// Retrieve information and write to .csv file
@@ -51,9 +47,6 @@ public class SaveUserData {
 			}
 			// Close the fileWriter
 			studentDataWriter.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	// Allows for deletion of file based on fileName.
@@ -63,37 +56,30 @@ public class SaveUserData {
 	 * @param fileName The name of the file you wish to delete.
 	 * @throws FileNotFoundException If the entered fileName does no correspond to a existing file.
 	 */
-	public void deleteFile(Student studentToDelete) {
-		try {
+	public void deleteFile(Student studentToDelete) throws FileNotFoundException, IOException{
 			File myFilePath = new File(System.getProperty("user.home")+"\\GradesApplication\\UserData\\");
 			String fullFilePath;
 			String fileName = studentToDelete.getPersonName();
 			fileName = fileName.replace(" ", "_");
 			fullFilePath = myFilePath.getAbsolutePath()+"\\"+fileName+".MGD";
 			File mySaveFile = new File(fullFilePath);
-			if (mySaveFile.delete()) {
-				System.out.println("File \""+fileName+"\" successfully deleted.");
-			} else {
+			if (!mySaveFile.exists()) {
 				throw new FileNotFoundException("Could not delete file \""+fileName+"\"");
+			} else if (!mySaveFile.delete()) {
+				throw new IOException("Could not delete the file \"+fileName+\"");
+			} else {
+//				System.out.println("File \""+fileName+"\" successfully deleted.");
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
 		Student testPerson = new Student("Ola Nordmann");
 		testPerson.addNewGrade("TestCourse01", "MMM0001", "B");
 		testPerson.addNewGrade("TestCourse02", "MMM0002", "C");
 		testPerson.addNewGrade("TestCourse03", "MMM0003", "D");
 		
 		SaveUserData mySave = new SaveUserData();
-		try {
-			mySave.save(testPerson);
-//			mySave.deleteFile(testPerson);
-		} catch (FileNotFoundException e) {
-			System.out.println("File could not be found. Process terminated.");
-			e.printStackTrace();
-		}
+		mySave.save(testPerson);
+//		mySave.deleteFile(testPerson);
 	}
 }
