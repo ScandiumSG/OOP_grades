@@ -6,6 +6,12 @@ import java.util.Scanner;
 
 public class LoadFileCSV {
 
+	/**
+	 * Load the Student personName and all Course Objects found in a .csv file in the User/GradesApplication/Import folder.
+	 * @param fileName The name of the .csv file that is read from User/GradesApplication/Import folder.
+	 * @param readToObject The student Object that will add the read data.
+	 * @throws FileNotFoundException If file not found
+	 */
 	public void load(String fileName, Student readToObject) throws FileNotFoundException {
 		
 		// Check if the folders exist.
@@ -22,9 +28,7 @@ public class LoadFileCSV {
 		
 		try (Scanner CSVParser = new Scanner(mySaveFile)) {
 			Course newCourse;
-			char courseGrade;
 			double coursePoints;
-			
 			while (CSVParser.hasNextLine()) {
 				String currentLine = CSVParser.nextLine();
 				System.out.println(currentLine);
@@ -38,9 +42,8 @@ public class LoadFileCSV {
 				} else {
 					// Substrings trimmed incase user input a file with trailing or leading whitespace.
 					String LineFields [] = currentLine.split(",", 4);
-					courseGrade = LineFields[2].trim().charAt(0);
 					coursePoints = Double.parseDouble(LineFields[3].trim());
-					newCourse = new Course(LineFields[0].trim(), LineFields[1].trim(), courseGrade, coursePoints);
+					newCourse = new Course(LineFields[0].trim(), LineFields[1].trim(), LineFields[2].trim(), coursePoints);
 					readToObject.addNewGrade(newCourse);
 				}
 			}

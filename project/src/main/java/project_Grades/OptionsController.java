@@ -18,6 +18,7 @@ public class OptionsController {
 		list.add("D");
 		list.add("E");
 		list.add("F");
+		list.add("Bestått");
 		
 		ObservableList<String> availableChoices = FXCollections.observableArrayList(list);
 		return availableChoices;
@@ -33,7 +34,7 @@ public class OptionsController {
 		if (myGrades.getCourseAmount()==-1) {
 			outputMessage = "\nDu har ingen registerte emner.";
 		} else {
-			outputMessage = "Din gjennomsnittskarakter er: "+myGrades.getAverageGrade()+"\nBeste karakter: "+Character.toString(myGrades.getBestGrade())+"\nVærste karakter: "+Character.toString(myGrades.getWorstGrade());
+			outputMessage = "Din gjennomsnittskarakter er: "+myGrades.getAverageGrade()+"\nBeste karakter: "+myGrades.getBestGrade()+"\nVærste karakter: "+myGrades.getWorstGrade();
 		}
 		return outputMessage;
 	}
@@ -46,13 +47,26 @@ public class OptionsController {
 		return listedCourses;
 	}
 	
+	/**
+	 * Adds a new Course Object to the student Object.
+	 * @param newCourseName A textfield containing the new course name.
+	 * @param newCourseCode A textfield containing the new course code.
+	 * @param newCourseGrade A choicebox of valid string Grades.
+	 * @param newCoursePoints A textfield containing the new course point.
+	 * @param myGrades The Student object that the course is added to.
+	 */
 	public static void addCourseToStudent(TextField newCourseName, TextField newCourseCode, ChoiceBox<String> newCourseGrade, TextField newCoursePoints, Student myGrades) {
-		char courseGrade = newCourseGrade.getSelectionModel().getSelectedItem().charAt(0);
 		double coursePoints = Double.valueOf(newCoursePoints.getText());
-		Course addedCourse = new Course(newCourseName.getText(), newCourseCode.getText(), courseGrade, coursePoints);
+		Course addedCourse = new Course(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getSelectionModel().getSelectedItem(), coursePoints);
 		myGrades.addNewGrade(addedCourse);
 	}
 	
+	/**
+	 * Find and return a Course object from the assigned Courses to the Student object based on the Course code.
+	 * @param findThisCourse The course code that we look for in the Course objects.
+	 * @param myGrades The student object that is searched through for the Course.
+	 * @return
+	 */
 	public static Course findCourseOnCode(TextField findThisCourse, Student myGrades) {
 		Course targetCourse = null;
 		for (int i = 0; i < myGrades.getCourseAmount(); i++) {
@@ -60,7 +74,11 @@ public class OptionsController {
 				targetCourse = myGrades.getCourse(i);
 			}
 		}
-		return targetCourse;
+		if (targetCourse != null) {
+			return targetCourse;
+		} else {
+			throw new IllegalArgumentException("Could not find the Course with the course code \""+findThisCourse+"\"");
+		}
 	}
 	
 }

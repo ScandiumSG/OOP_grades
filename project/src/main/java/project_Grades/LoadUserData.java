@@ -6,6 +6,11 @@ import java.util.Scanner;
 
 public class LoadUserData {
 
+	/**
+	 * Load the Student personName and all Course Objects found in a .MGD file in the User/GradesApplication/Export folder.
+	 * @param readToStudent The student Object that will add the read data.
+	 * @throws FileNotFoundException If file not found
+	 */
 	public void load(Student readToStudent) throws FileNotFoundException {
 		
 		// Check if the folders exist.
@@ -17,13 +22,12 @@ public class LoadUserData {
 		String fileName = readToStudent.getPersonName();
 		fileName = fileName.replace(" ", "_");
 		// Locate the .csv file 
-		File userDataFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".data");
+		File userDataFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".MGD");
 		if (!userDataFile.exists()) {
 			System.out.println("No user associated with that name.");
 		} else if (userDataFile.exists()) {
 			try (Scanner userDataParser = new Scanner(userDataFile)) {
 				Course newCourse;
-				char courseGrade;
 				double coursePoints;
 				while (userDataParser.hasNextLine()) {
 					String currentLine = userDataParser.nextLine();
@@ -35,9 +39,8 @@ public class LoadUserData {
 						continue;
 					}
 					String dataFields[] = currentLine.split("::");
-					courseGrade = dataFields[2].charAt(0);
 					coursePoints = Double.parseDouble(dataFields[3]);
-					newCourse = new Course(dataFields[0], dataFields[1], courseGrade, coursePoints);
+					newCourse = new Course(dataFields[0], dataFields[1], dataFields[2], coursePoints);
 					readToStudent.addNewGrade(newCourse);
 				}
 				userDataParser.close();
