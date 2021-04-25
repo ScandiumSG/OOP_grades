@@ -3,21 +3,43 @@ package project_Grades;
 import java.util.ArrayList;
 
 public class Student {
+	/**
+	 * A ArrayList containing all the courses assigned to this Student Object.
+	 */
 	private ArrayList<Course> myGrades = new ArrayList<Course>();
+	
+	/**
+	 * A string that contains the internal name/nickname for the Student Object.
+	 */
 	private String studentName;
 	
+	/**
+	 * Initialization of the Student object.
+	 * @param name A string that sets the internal name/nickname of the Student object.
+	 * @throws IllegalArgumentException if the String name = null.
+	 */
 	public Student(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("Person name cannot be 'null'");
+		if (name.equals(null) || name.equals("")) {
+			throw new IllegalArgumentException("Person name cannot be 'null' or blank");
 		} else {
 			this.studentName = name;
 		}
 	}
 	
+	/**
+	 * Return a course Object from the assigned objects to the Student.
+	 * @param n A interger corresponding to the Course object index to retrieve from the Student arrayList
+	 * @return A Course object.
+	 */
 	public Course getCourse(int n) {
 		return this.myGrades.get(n);
 	}
 	
+	/**
+	 * Return a course from the assigned courses of the Student Object.
+	 * @param desiredCourse A premade Course object
+	 * @return
+	 */
 	public Course getCourse(Course desiredCourse) {
 		Course foundCourse = null;
 		for (Course thisCourse: myGrades) {
@@ -33,13 +55,26 @@ public class Student {
 		
 	}
 	
+	/**
+	 * Remove a coruse from the list of assigned courss to this Student Object.
+	 * @param n A int corresponding to Course Object's index that we wish to remove.
+	 */
 	public void removeCourse(int n) {
 		this.myGrades.remove(n);
 	}
 	
+	/**
+	 * Remove a course from the list of assigned courses to this Student Object.
+	 * @param removeCourse A course object that is to be removed from the Student.
+	 */
 	public void removeCourse(Course removeCourse) {
 		this.myGrades.remove(removeCourse);
 	}
+	
+	/**
+	 * Get the amount of Course objects added to this Student.
+	 * @return A interger of the amount of courses. If 0 courses add returns -1
+	 */
 	
 	public int getCourseAmount() {
 		if (this.myGrades.size()!=0) {
@@ -49,6 +84,10 @@ public class Student {
 		}
 	}
 	
+	/**
+	 * Return total course points, inclding points from pass/fail courses.
+	 * @return A double equal to amount of course points for the student.
+	 */
 	public double getTotalCoursePoints() {
 		double totalPoints = 0;
 		for (Course thisCourse: this.myGrades) {
@@ -57,78 +96,138 @@ public class Student {
 		return totalPoints;
 	}
 	
+	/**
+	 * Return total course points, excluding points from pass/fail courses.
+	 * @return A double equal to amount of course points for the student.
+	 */
+	public double getTotalUsableCoursePoints() {
+		double totalPoints = 0;
+		for (Course thisCourse: this.myGrades) {
+			if (!thisCourse.getCourseGrade().equals("Bestått")) {
+				totalPoints = totalPoints + thisCourse.getCoursePoints();
+			}
+		}
+		return totalPoints;
+	}
+	
+	/**
+	 * Change the name of the student for this Object.
+	 * @param name String of the new name/nickname for Object subject.
+	 * @throws IllegalArgumentException if input name = null.
+	 */
 	public void setPersonName(String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("Person name cannot be 'null'");
+		if (name.equals(null) || name.equals("")) {
+			throw new IllegalArgumentException("Person name cannot be 'null' or blank");
 		} else {
 			this.studentName = name;
 		}
 	}
 	
+	/**
+	 * Retrieve the set name of the Student.
+	 * @return A string of the students name or identifier.
+	 */
 	public String getPersonName() {
 		return this.studentName;
 	}
 	
-	public void addNewGrade(String subjectName, String subjectCode, char grade) {
+	/**
+	 * Add a new course to the student by making the new Course Object.
+	 * @param subjectName A self-deterined to identify/give a course a nickname.
+	 * @param subjectCode A courseCode that is validated before acceptance.
+	 * @param grade is a String of A-F or "Bestått".
+	 * @throws IllegalArgumentException in case of invalid inputs.
+	 */
+	public void addNewGrade(String subjectName, String subjectCode, String grade) {
 		Course newCourse = new Course(subjectName, subjectCode, grade);
 		this.myGrades.add(newCourse);
 		// System.out.println("New course added: "+newCourse);
 	}
 	
-	public void addNewGrade(String subjectName, String subjectCode, char grade, double points) {
+	/**
+	 * Add a new course to the student by making the new Course Object.
+	 * @param subjectName A self-deterined to identify/give a course a nickname.
+	 * @param subjectCode A courseCode that is validated before acceptance.
+	 * @param grade is a String of A-F or "Bestått".
+	 * @param points A double of the points a course would give the student.
+	 * @throws IllegalArgumentException in case of invalid inputs.
+	 */
+	public void addNewGrade(String subjectName, String subjectCode, String grade, double points) {
 		Course newCourse = new Course(subjectName, subjectCode, grade, points);
 		this.myGrades.add(newCourse);
 		// System.out.println("New course added: "+newCourse);
 	}
 	
+	/**
+	 * Adds a new course to the student, from a premade object.
+	 * @param newCourse A previously made Course object.
+	 */
 	public void addNewGrade(Course newCourse) {
 		this.myGrades.add(newCourse);
 		// System.out.println("New course added: "+newCourse);
 	}
 	
-	public char getWorstGrade() {
+	/**
+	 * Return the worst grade obtained (only A-F, pass grades does not count) for the Student.
+	 * @return String contained the worst grade (A-F).
+	 */
+	public String getWorstGrade() {
 		char worstGrade = 'A'; // fixed value set since this is best allowed grade.
 		for (Course thisCourse: myGrades) {
-			if (thisCourse.getCourseGrade() > worstGrade) {
-				worstGrade = thisCourse.getCourseGrade();
+			if (!thisCourse.getCourseGrade().equals("Bestått")) {
+				if (thisCourse.getCourseGrade().charAt(0) > worstGrade) {
+					worstGrade = thisCourse.getCourseGrade().charAt(0);
+				}
 			}
 		}
-		return worstGrade;
+		return Character.toString(worstGrade);
 	}
 	
-	public char getBestGrade() {
+	/**
+	 * Return the best grade obtained (only A-F, pass grades does not count) for the Student.
+	 * @return String contained the best grade (A-F).
+	 */
+	public String getBestGrade() {
 		char bestGrade = 'F'; // fixed value set since this is worst allowed grade. 
 		for (Course thisCourse: myGrades) {
-			if (thisCourse.getCourseGrade() < bestGrade) {
-				bestGrade = thisCourse.getCourseGrade();
+			if (!thisCourse.getCourseGrade().equals("Bestått")) {
+				if (thisCourse.getCourseGrade().charAt(0) < bestGrade) {
+					bestGrade = thisCourse.getCourseGrade().charAt(0);
+				}
 			}
 		}
-		return bestGrade;
+		return Character.toString(bestGrade);
 	}
 	
-	public char getAverageGrade() {
+	/**
+	 * Calculate the average grade for the Student based on all courses assigned the the student with a A-F grade, Pass grades are not included in calculation.
+	 * @return A string of the average Grade (A-F) rounded.
+	 */
+	public String getAverageGrade() {
 		double totalPoints = 0; //Initialization of point summation used in loop.
 		
 		for (Course thisCourse : this.myGrades) { // Look at all courses in this.myGrades
-			double weightedPoints = fromGradeToInt(thisCourse.getCourseGrade()) * thisCourse.getCoursePoints(); // Weight the courses based on points
-			totalPoints = totalPoints + weightedPoints;
+			if (!thisCourse.getCourseGrade().equals("Bestått")) {
+				double weightedPoints = fromGradeToInt(thisCourse.getCourseGrade()) * thisCourse.getCoursePoints(); // Weight the courses based on points
+				totalPoints = totalPoints + weightedPoints;
+			}
 		}
-		double averageGradePoints = Math.round(totalPoints/this.getTotalCoursePoints()); // Finds average grade points then rounds the number
-		char averageCharGrade = this.fromDoubleToGrade(averageGradePoints); // Convert from double to grade
+		double averageGradePoints = Math.round(totalPoints/this.getTotalUsableCoursePoints()); // Finds average grade points then rounds the number
+		String averageCharGrade = this.fromDoubleToGrade(averageGradePoints); // Convert from Double to String
 		return averageCharGrade;
 	}
 	
 	// Convert from a char grade to a int that can be directly used in calculations.
-	private int fromGradeToInt(char grade) {
-		if (grade == 'A') {
+	private int fromGradeToInt(String grade) {
+		if (grade.equals("A")) {
 			return 5;
-		} else if (grade == 'B') {
+		} else if (grade.equals("B")) {
 			return 4;
-		} else if (grade == 'C') {
+		} else if (grade.equals("C")) {
 			return 3;
-		} else if (grade == 'D') {
+		} else if (grade.equals("D")) {
 			return 2;
-		} else if (grade == 'E') {
+		} else if (grade.equals("E")) {
 			return 1;
 		} else {
 			return 0;
@@ -136,19 +235,21 @@ public class Student {
 	}
 	
 	// Convert from a double to a char grade.
-	private char fromDoubleToGrade(double n) {
+	private String fromDoubleToGrade(double n) {
 		if (n == 5) {
-			return 'A';
+			return "A";
 		} else if (n == 4) {
-			return 'B';
+			return "B";
 		} else if (n == 3) {
-			return 'C';
+			return "C";
 		} else if (n == 2) {
-			return 'D';
+			return "D";
 		} else if (n == 1) {
-			return 'E';
+			return "E";
+		} else if (n == 0) {
+			return "F";
 		} else {
-			return 'F';
+			return "Bestått";
 		}
 	}
 	
@@ -156,17 +257,17 @@ public class Student {
 	public int[] extractData() {
     	int[] gradeSummation = {0, 0, 0, 0, 0, 0};
     	for (Course thisCourse: this.myGrades) {
-    		if (thisCourse.getCourseGrade() == 'A') {
+    		if (thisCourse.getCourseGrade().equals("A")) {
     			gradeSummation[0] += 1;
-    		} else if (thisCourse.getCourseGrade() == 'B') {
+    		} else if (thisCourse.getCourseGrade().equals("B")) {
     			gradeSummation[1] += 1;
-    		} else if (thisCourse.getCourseGrade() == 'C') {
+    		} else if (thisCourse.getCourseGrade().equals("C")) {
     			gradeSummation[2] += 1;
-    		} else if (thisCourse.getCourseGrade() == 'D') {
+    		} else if (thisCourse.getCourseGrade().equals("D")) {
     			gradeSummation[3] += 1;
-    		} else if (thisCourse.getCourseGrade() == 'E') {
+    		} else if (thisCourse.getCourseGrade().equals("E")) {
     			gradeSummation[4] += 1;
-    		} else if (thisCourse.getCourseGrade() == 'F') {
+    		} else if (thisCourse.getCourseGrade().equals("F")) {
     			gradeSummation[5] += 1;
     		}
     	}
@@ -181,11 +282,11 @@ public class Student {
 	
 	public static void main(String[] args) {
 		Student Per = new Student("Per");
-		Per.addNewGrade("ITGK", "TDT4109",'B');
-		Per.addNewGrade("Webtek", "IT2805", 'A');
-		Per.addNewGrade("Matte1", "TMA4100", 'B');
-		Per.addNewGrade("Masterprosjekt", "KJ3900", 'B', 60);
-		Per.addNewGrade("Exphil", "EXPH0004", 'D', 7.5);
+		Per.addNewGrade("ITGK", "TDT4109","B");
+		Per.addNewGrade("Webtek", "IT2805", "A");
+		Per.addNewGrade("Matte1", "TMA4100", "B");
+		Per.addNewGrade("Masterprosjekt", "KJ3900", "B", 60);
+		Per.addNewGrade("Exphil", "EXPH0004", "D", 7.5);
 		System.out.println(Per);
 		System.out.println("Best grade: "+Per.getBestGrade());
 		System.out.println("Worst grade: "+Per.getWorstGrade());

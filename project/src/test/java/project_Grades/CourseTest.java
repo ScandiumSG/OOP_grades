@@ -10,14 +10,14 @@ public class CourseTest {
 	
 	@BeforeEach
 	public void setUp() {
-		testCourse = new Course("testCourse", "ABC1234", 'C');
+		testCourse = new Course("testCourse", "ABC1234", "C");
 	}
 	
 	@Test
 	@DisplayName("Initialize a grade.")
 	void testGrade() {
-		Course testCourseInit = new Course("testCourse", "ABC1234", 'C', 7.5);
-		Assertions.assertEquals('C', testCourseInit.getCourseGrade(), "Feil karakter for emnet");
+		Course testCourseInit = new Course("testCourse", "ABC1234", "C", 7.5);
+		Assertions.assertEquals("C", testCourseInit.getCourseGrade(), "Feil karakter for emnet");
 		Assertions.assertEquals("testCourse", testCourseInit.getCourseName(), "Feil emne navn.");
 		Assertions.assertEquals("ABC1234", testCourseInit.getCourseCode(), "Feil emnekode.");
 		Assertions.assertEquals(7.5, testCourseInit.getCoursePoints(), "Feil emne poeng.");
@@ -50,16 +50,31 @@ public class CourseTest {
 	@Test
 	@DisplayName("Subject grade initialization and changes")
 	void testCourseGrade() {
-		Assertions.assertEquals('C', testCourse.getCourseGrade(), "Initialization of course grade failed.");
-		testCourse.setCourseGrade('B');
-		Assertions.assertEquals('B', testCourse.getCourseGrade(), "Grade didnt change to B.");
-		testCourse.setCourseGrade('a');
-		Assertions.assertEquals('A', testCourse.getCourseGrade(), "Lower case grade was not corrected to uppercase.");
+		Assertions.assertEquals("C", testCourse.getCourseGrade(), "Initialization of course grade failed.");
+		testCourse.setCourseGrade("B");
+		Assertions.assertEquals("B", testCourse.getCourseGrade(), "Grade didnt change to B.");
+		testCourse.setCourseGrade("a");
+		Assertions.assertEquals("A", testCourse.getCourseGrade(), "Lower case grade was not corrected to uppercase.");
 		
 		Assertions.assertThrows(IllegalArgumentException.class, () -> 
-			{testCourse.setCourseGrade('G');}, "Grade set to invalid value.");
+			{testCourse.setCourseGrade("G");}, "Grade set to invalid value.");
 	}
+	
+	@Test
+	@DisplayName("Check if \"Bestått\" is valid grade.")
+	void testPassGrade() {
+		Assertions.assertEquals("C",  testCourse.getCourseGrade(), "Initial course grad should have been \"C\"");
+		testCourse.setCourseGrade("Bestått");
+		Assertions.assertEquals("Bestått", testCourse.getCourseGrade(), "Course could not be set to \"Bestått\"");
+		testCourse.setCourseGrade("bestått");
+		Assertions.assertEquals("Bestått", testCourse.getCourseGrade(), "Did not translate lowercase to \"Bestått\"");
 		
+		Assertions.assertThrows(IllegalArgumentException.class, () ->
+		{testCourse.setCourseGrade("Passed");}, "Grade set to invalid value.");
+		Assertions.assertThrows(IllegalArgumentException.class, () ->
+		{testCourse.setCourseGrade("bestatt");}, "Grade set to invalid value.");
+	}
+	
 	@Test
 	@DisplayName("Subject points initialization and changes")
 	void testCoursePoints() {
