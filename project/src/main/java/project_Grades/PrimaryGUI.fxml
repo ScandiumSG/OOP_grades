@@ -51,6 +51,11 @@
                         <TextField fx:id="errorTextHeader" editable="false" layoutX="14.0" layoutY="28.0" />
                         <TextArea fx:id="errorTextArea" editable="false" layoutX="14.0" layoutY="53.0" prefHeight="139.0" prefWidth="234.0" wrapText="true" />
                         <Button fx:id="errorMessageOKBtn" layoutX="289.0" layoutY="164.0" mnemonicParsing="false" onAction="#closeErrorMessagePane" text="OK" />
+                        <Label layoutX="100.0" text="FEILMELDING">
+                           <font>
+                              <Font name="System Bold" size="21.0" />
+                           </font>
+                        </Label>
                      </children>
                   </Pane>
                   <TableView fx:id="contentTable" prefHeight="316.0" prefWidth="800.0">
