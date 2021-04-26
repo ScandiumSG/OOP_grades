@@ -15,7 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 
 public class ControllerMyGrades {
-	private Student myGrades;
+	private Student currentUser;
 	
 	@FXML
 	Pane topPane;
@@ -174,7 +174,7 @@ public class ControllerMyGrades {
 	@FXML
 	private void closeStartupPane() {
 		try {
-			myGrades = new Student(initialUserName.getText());
+			currentUser = new Student(initialUserName.getText());
 			loadUserData();
 			startupPane.toBack();
 			startupPane.setOpacity(0);
@@ -188,7 +188,7 @@ public class ControllerMyGrades {
 	private void addNewCourse() {
 		try {
 			Course addedCourse = new Course(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getSelectionModel().getSelectedItem(), Double.valueOf(newCoursePoints.getText()));
-			myGrades.addNewGrade(addedCourse);
+			currentUser.addNewGrade(addedCourse);
 			reloadGUI();
 		} catch (IllegalArgumentException e) {
 			showErrorMessage("Ugyldig emneinformasjon", "Oppgitt emneinformasjon var feil.\nVennligst fyll ut på nytt og prøv igjen.");
@@ -198,10 +198,10 @@ public class ControllerMyGrades {
 	@FXML
 	private void removeCourse() {
 		try {
-			myGrades.removeCourse(myGrades.findCourseUsingCourseCode(courseToRemove.getText()));
+			currentUser.removeCourse(currentUser.findCourseUsingCourseCode(courseToRemove.getText()));
 			reloadGUI();
 		} catch (IllegalArgumentException e) {
-			showErrorMessage("Ugyldig emnekode", "Kunne ikke finne \""+courseToRemove.getText()+"\" i listen over emner for "+myGrades.getPersonName()+".\nKontroller om du skrev inn riktig emnekode og prøv på nytt.");
+			showErrorMessage("Ugyldig emnekode", "Kunne ikke finne \""+courseToRemove.getText()+"\" i listen over emner for "+currentUser.getPersonName()+".\nKontroller om du skrev inn riktig emnekode og prøv på nytt.");
 		}
 	}
 	
@@ -224,7 +224,7 @@ public class ControllerMyGrades {
 	private void changeUserAccount() {
 		System.out.println(newUsername.getText());
 		try {
-			myGrades = new Student(newUsername.getText());
+			currentUser = new Student(newUsername.getText());
 			loadUserData();
 			reloadGUI();
 		} catch (IllegalArgumentException e) {
@@ -271,12 +271,12 @@ public class ControllerMyGrades {
 		String fileName = savePaneFileName.getText();
 		SaveFileCSV fileSaver = new SaveFileCSV();
 		try {
-			fileSaver.save(fileName, myGrades);
+			fileSaver.save(fileName, currentUser);
 			saveFilePaneToggle();
 			reloadGUI();
 		} catch (IOException f) {
 			try  {
-				fileSaver.save(fileName, myGrades);
+				fileSaver.save(fileName, currentUser);
 				saveFilePaneToggle();
 				reloadGUI();
 			} catch(IOException g) {
@@ -291,8 +291,8 @@ public class ControllerMyGrades {
 		String fileName = loadPaneFileName.getText();
 		SaveFileCSV fileLoader = new SaveFileCSV();
 		try {
-			myGrades = new Student("UserImport");
-			fileLoader.load(fileName, myGrades);
+			currentUser = new Student("UserImport");
+			fileLoader.load(fileName, currentUser);
 			loadFilePaneToggle();
 			reloadGUI();
 		} catch (FileNotFoundException e) {
@@ -300,7 +300,7 @@ public class ControllerMyGrades {
 			e.printStackTrace();
 		} catch (IOException f) {
 			try  {
-				fileLoader.load(fileName, myGrades);
+				fileLoader.load(fileName, currentUser);
 				saveFilePaneToggle();
 				reloadGUI();
 			} catch(IOException g) {
@@ -314,7 +314,7 @@ public class ControllerMyGrades {
 	private void saveUserData() {
 		SaveUserData dataSaver = new SaveUserData();
 		try {
-			dataSaver.save(myGrades);
+			dataSaver.save(currentUser);
 			reloadGUI();
 			userDataSaveStatus.setText("Lagret");
 		} catch (FileNotFoundException e) {
@@ -322,11 +322,11 @@ public class ControllerMyGrades {
 			e.printStackTrace();
 		} catch (IOException f) {
 			try  {
-				dataSaver.save(myGrades);
+				dataSaver.save(currentUser);
 				saveFilePaneToggle();
 				reloadGUI();
 			} catch(IOException g) {
-				showErrorMessage("Feil", "Noe gikk galt som hindret oss å lage filen "+myGrades.getPersonName()+".\nKontroller at filplassering er skrivbar og prøv igjen.");
+				showErrorMessage("Feil", "Noe gikk galt som hindret oss å lage filen "+currentUser.getPersonName()+".\nKontroller at filplassering er skrivbar og prøv igjen.");
 				g.printStackTrace();
 			}
 		}
@@ -336,9 +336,9 @@ public class ControllerMyGrades {
 	private void loadUserData() {
 		SaveUserData dataLoader = new SaveUserData();
 		try {
-			dataLoader.load(myGrades);
+			dataLoader.load(currentUser);
 		} catch (FileNotFoundException e) {
-			showErrorMessage("Data for "+myGrades.getPersonName()+" ikke funnet.", "Kunne ikke finne data for "+myGrades.getPersonName()+".\nSjekk om du har skrevet inn riktig navn og prøv igjen.");
+			showErrorMessage("Data for "+currentUser.getPersonName()+" ikke funnet.", "Kunne ikke finne data for "+currentUser.getPersonName()+".\nSjekk om du har skrevet inn riktig navn og prøv igjen.");
 			e.printStackTrace();
 		}
 	}
@@ -365,15 +365,15 @@ public class ControllerMyGrades {
 	
 	@FXML
 	void printCourseInfo() {
-		userNameField.setText(myGrades.getPersonName());
-		gradeTextField.setText(myGrades.outputFormattedGradesString(myGrades));
+		userNameField.setText(currentUser.getPersonName());
+		gradeTextField.setText(currentUser.outputFormattedGradesString(currentUser));
 	}
 	
 	@FXML
 	void changeUsernameConfirm() {
 		try {
 			System.out.println("Saved");
-			myGrades.setPersonName(usernameChangeField.getText());
+			currentUser.setPersonName(usernameChangeField.getText());
 			System.out.println(usernameChangeField.getText()+"-"+loadPaneFileName.getText()+"-"+savePaneFileName.getText());
 			System.out.println("Name changed - "+usernameChangeField.getText());
 			usernameChangePaneToggle();
@@ -411,7 +411,7 @@ public class ControllerMyGrades {
 		coursePointsColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("coursePoints"));
 		
 		// ObservableList<Course> is retrieved by Student object and added to table.
-		contentTable.setItems(myGrades.getObservableListOfCourses());
+		contentTable.setItems(currentUser.getObservableListOfCourses());
 		contentTable.getSortOrder().add(courseCodeColumn); // Default sorting by Course code.
 	}
 	
@@ -435,13 +435,13 @@ public class ControllerMyGrades {
 			}
 			SaveFileCSV fileSaver = new SaveFileCSV();
 			try {
-				fileSaver.save(filePath, fileName, myGrades);
+				fileSaver.save(filePath, fileName, currentUser);
 				saveFilePaneToggle();
 				reloadGUI();
 			} catch (IOException f) {
 				// If IOException try same action 1 more time before displaying error.
 				try  {
-					fileSaver.save(fileName, myGrades);
+					fileSaver.save(fileName, currentUser);
 					saveFilePaneToggle();
 					reloadGUI();
 				} catch(IOException g) {
@@ -467,8 +467,8 @@ public class ControllerMyGrades {
 			String fileName = fileChooser.getSelectedFile().getName();
 			SaveFileCSV fileLoader = new SaveFileCSV();
 			try {
-				myGrades = new Student("UserImport");
-				fileLoader.loadSpecifiedFile(filePath, myGrades);
+				currentUser = new Student("UserImport");
+				fileLoader.loadSpecifiedFile(filePath, currentUser);
 				loadFilePaneToggle();
 				reloadGUI();
 			} catch (FileNotFoundException e) {
@@ -477,7 +477,7 @@ public class ControllerMyGrades {
 			} catch (IOException f) {
 				// If IOException try same action 1 more time before displaying error.
 				try  {
-					fileLoader.load(fileName, myGrades);
+					fileLoader.load(fileName, currentUser);
 					saveFilePaneToggle();
 					reloadGUI();
 				} catch(IOException g) {
