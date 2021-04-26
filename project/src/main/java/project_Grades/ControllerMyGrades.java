@@ -1,7 +1,11 @@
 package project_Grades;
 
+import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -80,6 +84,12 @@ public class ControllerMyGrades {
 	
 	@FXML
 	Button removeCourseBtn;
+	
+	@FXML
+	Button loadSelectFileFromCSV;
+	
+	@FXML
+	Button saveSelectFileToCSV;
 	
 	@FXML
 	Button loadFileFromCSV;
@@ -427,5 +437,65 @@ public class ControllerMyGrades {
 		coursePointsColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("coursePoints"));
 		
 		contentTable.setItems(options.getListOfCourses(myGrades));
+	}
+	
+	@FXML
+	public void exportFileChooser() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Only allow folders to be selected.
+		int returnVal = fileChooser.showOpenDialog(fileChooser);
+		System.out.println("You chose to open this file: "+fileChooser.getSelectedFile().getName());
+		String filePath = fileChooser.getSelectedFile().getAbsoluteFile().getAbsolutePath();
+		String fileName = savePaneFileName.getText();
+		if (fileName.equals("")) {
+			showErrorMessage("Ingen filnavn", "Du må skrive inn hvilket navn du vil gi filen før du prøver å lagre.");
+			return;
+		}
+		SaveFileCSV fileSaver = new SaveFileCSV();
+		try {
+			fileSaver.save(filePath, fileName, myGrades);
+			saveFilePaneToggle();
+			reloadGUI();
+		} catch (IOException f) {
+			try  {
+				fileSaver.save(fileName, myGrades);
+				saveFilePaneToggle();
+				reloadGUI();
+			} catch(IOException g) {
+				showErrorMessage("Feil", "Noe gikk galt som hindret oss å lage filen "+fileName+".\nKontroller at filplassering er skrivbar og prøv igjen.");
+				g.printStackTrace();
+			}
+		}
+	}
+	
+	@FXML
+	public void importFileChooser() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); // Only allow import of files.
+		fileChooser.setDialogTitle("Velg fil du vil importere til MyGrades");
+		fileChooser.setPreferredSize(new Dimension(720, 480));
+		int returnVal = fileChooser.showOpenDialog(fileChooser);
+		System.out.println("You chose to open this file: "+fileChooser.getSelectedFile().getName());
+		String filePath = fileChooser.getSelectedFile().getAbsoluteFile().getAbsolutePath();
+		String fileName = fileChooser.getSelectedFile().getName();
+		SaveFileCSV fileLoader = new SaveFileCSV();
+		try {
+			myGrades = new Student("UserImport");
+			fileLoader.loadSpecifiedFile(filePath, myGrades);
+			loadFilePaneToggle();
+			reloadGUI();
+		} catch (FileNotFoundException e) {
+			showErrorMessage(fileName+" ikke funnet.", "Filen "+fileName+" ble ikke funnet.\nSjekk om du skrev inn riktig navn og prøv igjen.");
+			e.printStackTrace();
+		} catch (IOException f) {
+			try  {
+				fileLoader.load(fileName, myGrades);
+				saveFilePaneToggle();
+				reloadGUI();
+			} catch(IOException g) {
+				showErrorMessage("Feil", "Noe gikk galt som hindret oss å hente filen "+fileName+".\nKontroller at filplassering er lesbar, at du skrev filnavn riktig, og prøv igjen.");
+				g.printStackTrace();
+			}
+		}
 	}
 }
