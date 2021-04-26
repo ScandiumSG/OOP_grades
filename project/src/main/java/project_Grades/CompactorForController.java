@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
-public class OptionsController {
+public class CompactorForController {
 
 	public ObservableList<String> getValidGrades() {
 		List<String> list = new ArrayList<String>();

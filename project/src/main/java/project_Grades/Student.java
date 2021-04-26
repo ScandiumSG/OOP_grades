@@ -19,7 +19,8 @@ public class Student {
 	 * @throws IllegalArgumentException if the String name = null.
 	 */
 	public Student(String name) {
-		if (name.equals(null) || name.equals("")) {
+		name = name.trim();
+		if (name.equals(null) || name.equals(" ")) {
 			throw new IllegalArgumentException("Person name cannot be 'null' or blank");
 		} else {
 			this.studentName = name;
@@ -116,7 +117,8 @@ public class Student {
 	 * @throws IllegalArgumentException if input name = null.
 	 */
 	public void setPersonName(String name) {
-		if (name.equals(null) || name.equals("")) {
+		name = name.trim();
+		if (name.equals(null) || name.equals(" ")) {
 			throw new IllegalArgumentException("Person name cannot be 'null' or blank");
 		} else {
 			this.studentName = name;
@@ -205,10 +207,9 @@ public class Student {
 	 */
 	public String getAverageGrade() {
 		double totalPoints = 0; //Initialization of point summation used in loop.
-		
 		for (Course thisCourse : this.myGrades) { // Look at all courses in this.myGrades
-			if (!thisCourse.getCourseGrade().equals("Bestått")) {
-				double weightedPoints = fromGradeToInt(thisCourse.getCourseGrade()) * thisCourse.getCoursePoints(); // Weight the courses based on points
+				if (!thisCourse.getCourseGrade().equals("Bestått")) {
+					double weightedPoints = fromGradeToInt(thisCourse.getCourseGrade()) * thisCourse.getCoursePoints(); // Weight the courses based on points
 				totalPoints = totalPoints + weightedPoints;
 			}
 		}
@@ -255,7 +256,7 @@ public class Student {
 	
 	// Abstract retrieval of number of each grade, return as a integer list. A = int[0], F = int[5].
 	public int[] extractData() {
-    	int[] gradeSummation = {0, 0, 0, 0, 0, 0};
+    	int[] gradeSummation = {0, 0, 0, 0, 0, 0, 0};
     	for (Course thisCourse: this.myGrades) {
     		if (thisCourse.getCourseGrade().equals("A")) {
     			gradeSummation[0] += 1;
@@ -269,6 +270,8 @@ public class Student {
     			gradeSummation[4] += 1;
     		} else if (thisCourse.getCourseGrade().equals("F")) {
     			gradeSummation[5] += 1;
+    		} else if (thisCourse.getCourseGrade().equals("Bestått")) {
+    			gradeSummation[6] += 1;
     		}
     	}
     	return gradeSummation;
