@@ -222,7 +222,6 @@ public class ControllerMyGrades {
 	
 	@FXML
 	private void changeUserAccount() {
-		System.out.println(newUsername.getText());
 		try {
 			currentUser = new Student(newUsername.getText());
 			loadUserData();
@@ -372,14 +371,9 @@ public class ControllerMyGrades {
 	@FXML
 	void changeUsernameConfirm() {
 		try {
-			System.out.println("Saved");
 			currentUser.setPersonName(usernameChangeField.getText());
-			System.out.println(usernameChangeField.getText()+"-"+loadPaneFileName.getText()+"-"+savePaneFileName.getText());
-			System.out.println("Name changed - "+usernameChangeField.getText());
 			usernameChangePaneToggle();
-			System.out.println("Toggled");
 			reloadGUI();
-			System.out.println("Reloaded GUI");
 		} catch (IllegalArgumentException e) {
 			showErrorMessage("Ugyldig brukernavn", "Ditt nye brukernavn kan ikke være \"null\" eller tomt.\nPrøv på nytt.");
 		}
