@@ -76,4 +76,19 @@ public class StudentTest {
 		pointPerson.getCourse(0).setCoursePoints(20);
 		Assertions.assertEquals(20,  pointPerson.getTotalCoursePoints(), "Did not change course points correctly, should be 20.");
 	}
+	
+	@Test
+	@DisplayName("Retrieve Course with course code") 
+	void testRetrieveCourseWithCode() {
+		Course course3 = new Course("Testemne3", "ABC1003", "C");
+		Course course4= new Course("Testemne4", "ABC1004", "D");
+		Student testStudent = new Student("TestStudent");
+		testStudent.addNewGrade(course3);
+		testStudent.addNewGrade(course4);
+		
+		Assertions.assertEquals(course3, testStudent.findCourseUsingCourseCode("ABC1003"));
+		Assertions.assertEquals(course4, testStudent.findCourseUsingCourseCode("ABC1004"));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> 
+			{testStudent.findCourseUsingCourseCode("ABC1005");}, "Non-existant course should trigger IllegalArgumentException.");
+	}
 }

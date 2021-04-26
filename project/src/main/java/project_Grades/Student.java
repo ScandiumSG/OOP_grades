@@ -2,6 +2,14 @@ package project_Grades;
 
 import java.util.ArrayList;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+/**
+ * A class that allows a student/person to be associated with several Courses. 
+ * Provides methods for calculating average grades, finding best and worst grades, finding specific courses and providing all courses associated with student as an ObersableList.
+ * @author Stian K. Gaustad
+ */
 public class Student {
 	/**
 	 * A ArrayList containing all the courses assigned to this Student Object.
@@ -19,7 +27,8 @@ public class Student {
 	 * @throws IllegalArgumentException if the String name = null.
 	 */
 	public Student(String name) {
-		if (name.equals(null) || name.equals("")) {
+		name = name.trim();
+		if (name.equals(null) || name.equals(" ")) {
 			throw new IllegalArgumentException("Person name cannot be 'null' or blank");
 		} else {
 			this.studentName = name;
@@ -75,7 +84,6 @@ public class Student {
 	 * Get the amount of Course objects added to this Student.
 	 * @return A interger of the amount of courses. If 0 courses add returns -1
 	 */
-	
 	public int getCourseAmount() {
 		if (this.myGrades.size()!=0) {
 			return this.myGrades.size();
@@ -116,7 +124,8 @@ public class Student {
 	 * @throws IllegalArgumentException if input name = null.
 	 */
 	public void setPersonName(String name) {
-		if (name.equals(null) || name.equals("")) {
+		name = name.trim();
+		if (name.equals(null) || name.equals(" ")) {
 			throw new IllegalArgumentException("Person name cannot be 'null' or blank");
 		} else {
 			this.studentName = name;
@@ -201,14 +210,14 @@ public class Student {
 	
 	/**
 	 * Calculate the average grade for the Student based on all courses assigned the the student with a A-F grade, Pass grades are not included in calculation.
+	 * Average grades are rounded using Math.round().
 	 * @return A string of the average Grade (A-F) rounded.
 	 */
 	public String getAverageGrade() {
 		double totalPoints = 0; //Initialization of point summation used in loop.
-		
 		for (Course thisCourse : this.myGrades) { // Look at all courses in this.myGrades
-			if (!thisCourse.getCourseGrade().equals("Bestått")) {
-				double weightedPoints = fromGradeToInt(thisCourse.getCourseGrade()) * thisCourse.getCoursePoints(); // Weight the courses based on points
+				if (!thisCourse.getCourseGrade().equals("Bestått")) {
+					double weightedPoints = fromGradeToInt(thisCourse.getCourseGrade()) * thisCourse.getCoursePoints(); // Weight the courses based on points
 				totalPoints = totalPoints + weightedPoints;
 			}
 		}
@@ -217,7 +226,11 @@ public class Student {
 		return averageCharGrade;
 	}
 	
-	// Convert from a char grade to a int that can be directly used in calculations.
+	/**
+	 * Internal function that convert from a provided String grade (A-F or Bestått) to a integer that can be directly used in calculations. 
+	 * @param grade The courseGrade string that we will translate to a integer.
+	 * @return A integer that correspond to the input String grade.
+	 */
 	private int fromGradeToInt(String grade) {
 		if (grade.equals("A")) {
 			return 5;
@@ -234,7 +247,11 @@ public class Student {
 		}
 	}
 	
-	// Convert from a double to a char grade.
+	/**
+	 * Internal function that convert from a provided double to a String grade (A-F or Bestått).
+	 * @param n The double that we wish to convert to a String grade.
+	 * @return A string with the corresponding grade (A-F or Bestått)
+	 */
 	private String fromDoubleToGrade(double n) {
 		if (n == 5) {
 			return "A";
@@ -253,29 +270,56 @@ public class Student {
 		}
 	}
 	
-	// Abstract retrieval of number of each grade, return as a integer list. A = int[0], F = int[5].
-	public int[] extractData() {
-    	int[] gradeSummation = {0, 0, 0, 0, 0, 0};
-    	for (Course thisCourse: this.myGrades) {
-    		if (thisCourse.getCourseGrade().equals("A")) {
-    			gradeSummation[0] += 1;
-    		} else if (thisCourse.getCourseGrade().equals("B")) {
-    			gradeSummation[1] += 1;
-    		} else if (thisCourse.getCourseGrade().equals("C")) {
-    			gradeSummation[2] += 1;
-    		} else if (thisCourse.getCourseGrade().equals("D")) {
-    			gradeSummation[3] += 1;
-    		} else if (thisCourse.getCourseGrade().equals("E")) {
-    			gradeSummation[4] += 1;
-    		} else if (thisCourse.getCourseGrade().equals("F")) {
-    			gradeSummation[5] += 1;
-    		}
-    	}
-    	return gradeSummation;
+	/**
+	 * Find and return a Course object from the assigned Courses to the Student object based on the Course code.
+	 * @param findThisCourseCode The course code that we look for in the Course objects.
+	 * @param studentGrades The student object that is searched through for the Course.
+	 * @throws IllegalArgumentException Triggred if the entered courseCode does not exist in the provided Student instance.
+	 * @return The course object that has the same courseCode as provided as input.
+	 */
+	public Course findCourseUsingCourseCode(String findThisCourseCode) throws IllegalArgumentException{
+		Course targetCourse = null;
+		for (int i = 0; i < this.getCourseAmount(); i++) {
+			if (this.getCourse(i).getCourseCode().equals((findThisCourseCode).trim())) {
+				targetCourse = this.getCourse(i);
+			}
+		}
+		if (targetCourse != null) {
+			return targetCourse;
+		} else {
+			throw new IllegalArgumentException("Could not find the Course with the course code \""+findThisCourseCode+"\"");
+		}
+	}
+	
+	/**
+	 * Return all Course objects associated with this student instance in the form of a ObservableList.
+	 * @param studentGrades
+	 * @return A ObservableList<Course> Can be used directly with TableView in the GUI.
+	 */
+	public ObservableList<Course> getObservableListOfCourses() {
+		ObservableList<Course> listedCourses = FXCollections.observableArrayList();
+		for (int i = 0; i < this.getCourseAmount(); i++) {
+			listedCourses.add(this.getCourse(i));
+		}
+		return listedCourses;
+	}
+	
+	/**
+	 * Return a formatted string that contain the average grade, the worst grade, and the best grade for the input Student object.
+	 * @param studentGrades The student and their associated Course objects that we calculate average grade for.
+	 * @return A multiline string to be fed directly into a GUI element.
+	 */
+	public String outputFormattedGradesString(Student studentGrades) {
+		String outputMessage;
+		if (studentGrades.getCourseAmount()==-1) {
+			outputMessage = "\nDu har ingen registerte emner.";
+		} else {
+			outputMessage = "Din gjennomsnittskarakter er: "+studentGrades.getAverageGrade()+"\nBeste karakter: "+studentGrades.getBestGrade()+"\nVærste karakter: "+studentGrades.getWorstGrade();
+		}
+		return outputMessage;
 	}
 	
 	@Override
-	// Reformatting of toString method.
 	public String toString() {
 		return "Name: "+getPersonName()+"\nTotal courses: "+getCourseAmount()+" - Average Grade: "+getAverageGrade();
 	}

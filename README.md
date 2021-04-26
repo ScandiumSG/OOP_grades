@@ -1,7 +1,6 @@
-# Prosjekt-repo for TDT4100
+# TDT4100 Prosjekt for Stian Kjønniksen Gaustad
 
-Dette repoet inneholder et grunnoppsett for et prosjekt som bruker Java, JavaFX og JUnit5.
+Dette repoet inneholder koden til mitt "Grades" prosjekt for objektorientert programmering med java (TDT4100).
+Prosjektet er et karakterprogram som kan holde styr på karakterer, regne ut gjennomsnittskarakter, beste karakter, værste karakter. 
 
-For å kode prosjektet, kan du enten importere det fra url-en til dette repoet i Eclipse, eller du kan forke det til et eget repo, som du deretter kan importere og bruke.
-Sistnevnte gir mulighet til å bruke git for kodesynkronisering og versjonskontroll, og er absolutt anbefalt, spesielt om dere er to som jobber sammen på prosjektet.
-Videoer for begge måter å importere repoet ligger på Blackboard.
+All informasjon kan importeres vis .csv, og exporteres vis .csv hvis brukeren ønsker å flytte sine data over til en annen løsning.
