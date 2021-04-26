@@ -15,7 +15,7 @@ import javafx.scene.layout.Pane;
 
 public class ControllerMyGrades {
 	private Student myGrades;
-	private OptionsController options = new OptionsController();
+	private CompactorForController options = new CompactorForController();
 	
 	@FXML
 	Pane topPane;
@@ -138,11 +138,28 @@ public class ControllerMyGrades {
 	@FXML
 	TableColumn<Course, String> coursePointsColumn;
 	
+	// Change of the username.
+	@FXML
+	Button openUsernameChangePane;
+	
+	@FXML
+	Pane usernameChangePane;
+	
+	@FXML
+	TextField usernameChangeField;
+	
+	@FXML
+	Button usernameChangePaneClose;
+	
+	@FXML
+	Button usernameChangeConfirm;
+	
 	@FXML
 	private void initialize() {
 		startupPane.toFront();
 		saveFilePaneToggle();
 		loadFilePaneToggle();
+		usernameChangePaneToggle();
 		IOPanes.setDisable(true);
 		IOPanes.toBack();
 		newCourseGrade.setItems(options.getValidGrades());
@@ -279,6 +296,7 @@ public class ControllerMyGrades {
 		String fileName = loadPaneFileName.getText();
 		SaveFileCSV fileLoader = new SaveFileCSV();
 		try {
+			myGrades = new Student("UserImport");
 			fileLoader.load(fileName, myGrades);
 			loadFilePaneToggle();
 			reloadGUI();
@@ -344,12 +362,54 @@ public class ControllerMyGrades {
 		savePaneFileName.clear();
 		newUsername.clear();
 		courseToRemove.clear();
+		usernameChangeField.clear();
 	}
 	
 	@FXML
 	void printCourseInfo() {
 		userNameField.setText(options.getUserMessage(myGrades));
 		gradeTextField.setText(options.getCalculationMessage(myGrades));
+	}
+	
+	@FXML
+	void changeUsernameConfirm() {
+//		Button openUsernameChangePane;
+//		Pane usernameChangePane;
+//		TextField usernameChangeField;
+//		Button usernameChangePaneClose;
+//		Button usernameChangeConfirm;
+		
+// https://stackoverflow.com/questions/21966441/gettext-method-returning-null-even-though-a-value-is-entered-by-user
+		try {
+			System.out.println("Saved");
+			myGrades.setPersonName(usernameChangeField.getText());
+			System.out.println(usernameChangeField.getText()+"-"+loadPaneFileName.getText()+"-"+savePaneFileName.getText());
+			System.out.println("Name changed - "+usernameChangeField.getText());
+			usernameChangePaneToggle();
+			System.out.println("Toggled");
+			reloadGUI();
+			System.out.println("Reloaded GUI");
+		} catch (IllegalArgumentException e) {
+			showErrorMessage("Ugyldig brukernavn", "Ditt nye brukernavn kan ikke være \"null\" eller tomt.");
+//			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	void usernameChangePaneToggle() {
+		if (usernameChangePane.isDisabled()) {
+			IOPanes.setDisable(false);
+			IOPanes.toFront();
+			usernameChangePane.setDisable(false);
+			usernameChangePane.setOpacity(1);
+			usernameChangePane.toFront(); // Bring the pane to front.
+		} else if (!usernameChangePane.isDisabled()) {
+			IOPanes.setDisable(true);
+			IOPanes.toBack();
+			usernameChangePane.setDisable(true);
+			usernameChangePane.setOpacity(0);
+			usernameChangePane.toBack(); 
+		}
 	}
 	
 	@FXML
