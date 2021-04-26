@@ -3,10 +3,7 @@ package project_Grades;
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -19,7 +16,6 @@ import javafx.scene.layout.Pane;
 
 public class ControllerMyGrades {
 	private Student myGrades;
-	private CompactorForController options = new CompactorForController();
 	
 	@FXML
 	Pane topPane;
@@ -172,7 +168,7 @@ public class ControllerMyGrades {
 		usernameChangePaneToggle();
 		IOPanes.setDisable(true);
 		IOPanes.toBack();
-		newCourseGrade.setItems(options.getValidGrades());
+		newCourseGrade.setItems(Constants.getValidGrades());
 	}
 	
 	@FXML
@@ -194,7 +190,8 @@ public class ControllerMyGrades {
 	@FXML
 	private void addNewCourse() {
 		try {
-			options.addCourseToStudent(newCourseName, newCourseCode, newCourseGrade, newCoursePoints, myGrades);
+			Course addedCourse = new Course(newCourseName.getText(), newCourseCode.getText(), newCourseGrade.getSelectionModel().getSelectedItem(), Double.valueOf(newCoursePoints.getText()));
+			myGrades.addNewGrade(addedCourse);
 			reloadGUI();
 		} catch (IllegalArgumentException e) {
 			showErrorMessage("Ugyldig emneinformasjon", "Oppgitt emneinformasjon var feil.\nVennligst fyll ut på nytt og prøv igjen.");
@@ -206,7 +203,7 @@ public class ControllerMyGrades {
 //		TextField courseToRemove;
 //		Button removeCourseBtn;
 		try {
-			myGrades.removeCourse(options.findCourseOnCode(courseToRemove, myGrades));
+			myGrades.removeCourse(myGrades.findCourseUsingCourseCode(courseToRemove, myGrades));
 			reloadGUI();
 		} catch (IllegalArgumentException e) {
 			showErrorMessage("Ugyldig emnekode", "Kunne ikke finne \""+courseToRemove.getText()+"\" i listen over emner for "+myGrades.getPersonName()+".\nKontroller om du skrev inn riktig emnekode og prøv på nytt.");
@@ -377,8 +374,8 @@ public class ControllerMyGrades {
 	
 	@FXML
 	void printCourseInfo() {
-		userNameField.setText(options.getUserMessage(myGrades));
-		gradeTextField.setText(options.getCalculationMessage(myGrades));
+		userNameField.setText(myGrades.getPersonName());
+		gradeTextField.setText(myGrades.outputFormattedGradesString(myGrades));
 	}
 	
 	@FXML
@@ -436,35 +433,38 @@ public class ControllerMyGrades {
 		courseGradeColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("courseGrade"));
 		coursePointsColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("coursePoints"));
 		
-		contentTable.setItems(options.getListOfCourses(myGrades));
+		contentTable.setItems(myGrades.getObservableListOfCourses(myGrades));
 	}
 	
 	@FXML
 	public void exportFileChooser() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Only allow folders to be selected.
+		fileChooser.setDialogTitle("Velg hvilken mappe du vil lagre dine karakterer.");
+		fileChooser.setPreferredSize(new Dimension(720, 480));
 		int returnVal = fileChooser.showOpenDialog(fileChooser);
-		System.out.println("You chose to open this file: "+fileChooser.getSelectedFile().getName());
-		String filePath = fileChooser.getSelectedFile().getAbsoluteFile().getAbsolutePath();
-		String fileName = savePaneFileName.getText();
-		if (fileName.equals("")) {
-			showErrorMessage("Ingen filnavn", "Du må skrive inn hvilket navn du vil gi filen før du prøver å lagre.");
-			return;
-		}
-		SaveFileCSV fileSaver = new SaveFileCSV();
-		try {
-			fileSaver.save(filePath, fileName, myGrades);
-			saveFilePaneToggle();
-			reloadGUI();
-		} catch (IOException f) {
-			try  {
-				fileSaver.save(fileName, myGrades);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			String filePath = fileChooser.getSelectedFile().getAbsoluteFile().getAbsolutePath();
+			String fileName = savePaneFileName.getText();
+			if (fileName.equals("")) {
+				showErrorMessage("Ingen filnavn", "Du må skrive inn hvilket navn du vil gi filen før du prøver å lagre.");
+				return;
+			}
+			SaveFileCSV fileSaver = new SaveFileCSV();
+			try {
+				fileSaver.save(filePath, fileName, myGrades);
 				saveFilePaneToggle();
 				reloadGUI();
-			} catch(IOException g) {
-				showErrorMessage("Feil", "Noe gikk galt som hindret oss å lage filen "+fileName+".\nKontroller at filplassering er skrivbar og prøv igjen.");
-				g.printStackTrace();
-			}
+			} catch (IOException f) {
+				try  {
+					fileSaver.save(fileName, myGrades);
+					saveFilePaneToggle();
+					reloadGUI();
+				} catch(IOException g) {
+					showErrorMessage("Feil", "Noe gikk galt som hindret oss å lage filen "+fileName+".\nKontroller at filplassering er skrivbar og prøv igjen.");
+					g.printStackTrace();
+				}
+			} 
 		}
 	}
 	
@@ -475,26 +475,27 @@ public class ControllerMyGrades {
 		fileChooser.setDialogTitle("Velg fil du vil importere til MyGrades");
 		fileChooser.setPreferredSize(new Dimension(720, 480));
 		int returnVal = fileChooser.showOpenDialog(fileChooser);
-		System.out.println("You chose to open this file: "+fileChooser.getSelectedFile().getName());
-		String filePath = fileChooser.getSelectedFile().getAbsoluteFile().getAbsolutePath();
-		String fileName = fileChooser.getSelectedFile().getName();
-		SaveFileCSV fileLoader = new SaveFileCSV();
-		try {
-			myGrades = new Student("UserImport");
-			fileLoader.loadSpecifiedFile(filePath, myGrades);
-			loadFilePaneToggle();
-			reloadGUI();
-		} catch (FileNotFoundException e) {
-			showErrorMessage(fileName+" ikke funnet.", "Filen "+fileName+" ble ikke funnet.\nSjekk om du skrev inn riktig navn og prøv igjen.");
-			e.printStackTrace();
-		} catch (IOException f) {
-			try  {
-				fileLoader.load(fileName, myGrades);
-				saveFilePaneToggle();
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			String filePath = fileChooser.getSelectedFile().getAbsoluteFile().getAbsolutePath();
+			String fileName = fileChooser.getSelectedFile().getName();
+			SaveFileCSV fileLoader = new SaveFileCSV();
+			try {
+				myGrades = new Student("UserImport");
+				fileLoader.loadSpecifiedFile(filePath, myGrades);
+				loadFilePaneToggle();
 				reloadGUI();
-			} catch(IOException g) {
-				showErrorMessage("Feil", "Noe gikk galt som hindret oss å hente filen "+fileName+".\nKontroller at filplassering er lesbar, at du skrev filnavn riktig, og prøv igjen.");
-				g.printStackTrace();
+			} catch (FileNotFoundException e) {
+				showErrorMessage(fileName+" ikke funnet.", "Filen "+fileName+" ble ikke funnet.\nSjekk om du skrev inn riktig navn og prøv igjen.");
+				e.printStackTrace();
+			} catch (IOException f) {
+				try  {
+					fileLoader.load(fileName, myGrades);
+					saveFilePaneToggle();
+					reloadGUI();
+				} catch(IOException g) {
+					showErrorMessage("Feil", "Noe gikk galt som hindret oss å hente filen "+fileName+".\nKontroller at filplassering er lesbar, at du skrev filnavn riktig, og prøv igjen.");
+					g.printStackTrace();
+				}
 			}
 		}
 	}
