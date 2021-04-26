@@ -25,12 +25,6 @@ public class SaveFileCSV implements SaveHandler{
 			} else {
 				mySaveFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".csv");
 			}
-			
-			if (mySaveFile.createNewFile()) {
-				System.out.println("File made: "+mySaveFile.getName());
-			} else {
-				System.out.println("The file already existed.");
-			}
 		
 			// Retrieve information and write to .csv file
 			PrintWriter fileWriter = new PrintWriter(mySaveFile);
@@ -66,12 +60,6 @@ public class SaveFileCSV implements SaveHandler{
 		} else {
 			mySaveFile = new File(myFilePath.getAbsolutePath()+"\\"+fileName+".csv");
 		}
-		
-		if (mySaveFile.createNewFile()) {
-			System.out.println("File made: "+mySaveFile.getName());
-		} else {
-			System.out.println("The file already existed.");
-		}
 	
 		// Retrieve information and write to .csv file
 		PrintWriter fileWriter = new PrintWriter(mySaveFile);
@@ -105,7 +93,7 @@ public class SaveFileCSV implements SaveHandler{
 			} else if (!mySaveFile.delete()) {
 				throw new FileNotFoundException("Could not delete file \""+fileName+"\"");
 			} else {
-				System.out.println("File \""+fileName+"\" successfully deleted.");
+//				System.out.println("File \""+fileName+"\" successfully deleted.");
 			}
 			mySaveFile.deleteOnExit();
 	}

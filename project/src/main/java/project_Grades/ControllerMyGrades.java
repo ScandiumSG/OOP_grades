@@ -198,7 +198,7 @@ public class ControllerMyGrades {
 	@FXML
 	private void removeCourse() {
 		try {
-			myGrades.removeCourse(myGrades.findCourseUsingCourseCode(courseToRemove, myGrades));
+			myGrades.removeCourse(myGrades.findCourseUsingCourseCode(courseToRemove.getText()));
 			reloadGUI();
 		} catch (IllegalArgumentException e) {
 			showErrorMessage("Ugyldig emnekode", "Kunne ikke finne \""+courseToRemove.getText()+"\" i listen over emner for "+myGrades.getPersonName()+".\nKontroller om du skrev inn riktig emnekode og prøv på nytt.");
@@ -411,7 +411,7 @@ public class ControllerMyGrades {
 		coursePointsColumn.setCellValueFactory(new PropertyValueFactory<Course, String>("coursePoints"));
 		
 		// ObservableList<Course> is retrieved by Student object and added to table.
-		contentTable.setItems(myGrades.getObservableListOfCourses(myGrades));
+		contentTable.setItems(myGrades.getObservableListOfCourses());
 		contentTable.getSortOrder().add(courseCodeColumn); // Default sorting by Course code.
 	}
 	

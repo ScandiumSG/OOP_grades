@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TextField;
 
 /**
  * A class that allows a student/person to be associated with several Courses. 
@@ -85,7 +84,6 @@ public class Student {
 	 * Get the amount of Course objects added to this Student.
 	 * @return A interger of the amount of courses. If 0 courses add returns -1
 	 */
-	
 	public int getCourseAmount() {
 		if (this.myGrades.size()!=0) {
 			return this.myGrades.size();
@@ -279,11 +277,11 @@ public class Student {
 	 * @throws IllegalArgumentException Triggred if the entered courseCode does not exist in the provided Student instance.
 	 * @return The course object that has the same courseCode as provided as input.
 	 */
-	public Course findCourseUsingCourseCode(TextField findThisCourseCode, Student studentGrades) throws IllegalArgumentException{
+	public Course findCourseUsingCourseCode(String findThisCourseCode) throws IllegalArgumentException{
 		Course targetCourse = null;
-		for (int i = 0; i < studentGrades.getCourseAmount(); i++) {
-			if (studentGrades.getCourse(i).getCourseCode().equals((findThisCourseCode.getText()).trim())) {
-				targetCourse = studentGrades.getCourse(i);
+		for (int i = 0; i < this.getCourseAmount(); i++) {
+			if (this.getCourse(i).getCourseCode().equals((findThisCourseCode).trim())) {
+				targetCourse = this.getCourse(i);
 			}
 		}
 		if (targetCourse != null) {
@@ -298,10 +296,10 @@ public class Student {
 	 * @param studentGrades
 	 * @return A ObservableList<Course> Can be used directly with TableView in the GUI.
 	 */
-	public ObservableList<Course> getObservableListOfCourses(Student studentGrades) {
+	public ObservableList<Course> getObservableListOfCourses() {
 		ObservableList<Course> listedCourses = FXCollections.observableArrayList();
-		for (int i = 0; i < studentGrades.getCourseAmount(); i++) {
-			listedCourses.add(studentGrades.getCourse(i));
+		for (int i = 0; i < this.getCourseAmount(); i++) {
+			listedCourses.add(this.getCourse(i));
 		}
 		return listedCourses;
 	}
