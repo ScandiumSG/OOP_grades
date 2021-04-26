@@ -156,7 +156,7 @@
                         <Rectangle2D height="20.0" width="20.0" />
                      </viewport>
                      <image>
-                        <Image url="file:/C:/Users/stiga/git/tdt4100-prosjekt-stiankg/project/src/main/resources/images/Icon_edit.png" />
+                        <Image url="@/Images/Icon_edit.png" />
                      </image>
                   </ImageView>
                </graphic>
