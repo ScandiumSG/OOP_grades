@@ -1,5 +1,5 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
-    "editor.rulers": [80],
+    "editor.rulers": [100],
     "editor.formatOnSave": false
 }
