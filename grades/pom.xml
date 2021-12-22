@@ -109,7 +109,8 @@
                     <failsOnError>false</failsOnError>
                     <linkXRef>false</linkXRef>
                     <indentSize>4</indentSize>
-                    <lineLength>80</lineLength>
+                    <lineLength>100</lineLength>
+                    <configLocation>configuration/custom_checkstyle.xml</configLocation>
                 </configuration>
                 <executions>
                     <execution>
