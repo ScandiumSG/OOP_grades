@@ -1,6 +1,7 @@
-# TDT4100 Prosjekt for Stian Kjønniksen Gaustad
+# About
 
-Dette repoet inneholder koden til mitt "Grades" prosjekt for objektorientert programmering med java (TDT4100).
-Prosjektet er et karakterprogram som kan holde styr på karakterer, regne ut gjennomsnittskarakter, beste karakter, værste karakter. 
+A simple application that can store a user's grades for all their courses, calculate average grade (course points adjusted), and show best/worst grades. Has support for exporting information as .csv.
 
-All informasjon kan importeres vis .csv, og exporteres vis .csv hvis brukeren ønsker å flytte sine data over til en annen løsning.
+The information is stored based on user chosen username, so the used username needs to be remembered to easily access previosuly entered information.
+
+The UI is very simple, but functional, powered by javaFX.
