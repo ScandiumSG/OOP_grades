@@ -6,13 +6,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class SaveUserData implements InternalSaveHandler {
 
+    /**
+     * A method that takes the provided student object and writes each course to a file. 
+     * If file associated with the provided student object already exists this previous file is 
+     * deleted to make room for the newer data.
+     * @param studentToSave The student object we wish to save the data of.
+     */
     public void save(Student studentToSave) throws FileNotFoundException, IOException {
         // Make folders if appropriate folders don't exist.
-        File myFilePath = new File(System.getProperty("user.home") + "\\GradesApplication\\UserData\\");
+        File myFilePath = new File(
+            System.getProperty("user.home") + "\\GradesApplication\\UserData\\");
         if (myFilePath.mkdirs()) {
             System.out.println("New folder created.");
         } else if (!myFilePath.exists()) {
@@ -32,13 +40,17 @@ public class SaveUserData implements InternalSaveHandler {
         }
 
         // Retrieve information and write to .csv file
-        PrintWriter studentDataWriter = new PrintWriter(mySaveFile);
+        PrintWriter studentDataWriter = new PrintWriter(mySaveFile, StandardCharsets.UTF_8);
         studentDataWriter.print("ID:" + studentToSave.getPersonName() + ";");
         studentDataWriter.println();
         for (int i = 0; i < studentToSave.getCourseAmount(); i++) {
             Course currentCourse = studentToSave.getCourse(i);
-            String printDataLine = currentCourse.getCourseName() + "::" + currentCourse.getCourseCode() + "::"
-                    + currentCourse.getCourseGrade() + "::" + String.valueOf(currentCourse.getCoursePoints());
+            String sep = "::";
+            String printDataLine = String.join(
+                currentCourse.getCourseName(), sep, 
+                currentCourse.getCourseCode(), sep, 
+                currentCourse.getCourseGrade(), sep, 
+                String.valueOf(currentCourse.getCoursePoints()));
             studentDataWriter.print(printDataLine);
             studentDataWriter.println();
         }
@@ -46,11 +58,14 @@ public class SaveUserData implements InternalSaveHandler {
         studentDataWriter.close();
     }
 
-    // Allows for deletion of file based on fileName.
-    // Intended use: Tidy up after test files are made with JUnit. No other use
-    // currently.
+    /**
+     * Delete the local file associated with the provided student. Intended for tidying up after
+     * files are made when running JUnit tests.
+     * @param studentToDelete The student object associated with the file to delete.
+     */
     public void deleteFile(Student studentToDelete) throws FileNotFoundException, IOException {
-        File myFilePath = new File(System.getProperty("user.home") + "\\GradesApplication\\UserData\\");
+        File myFilePath = new File(
+            System.getProperty("user.home") + "\\GradesApplication\\UserData\\");
         String fullFilePath;
         String fileName = studentToDelete.getPersonName();
         fileName = fileName.replace(" ", "_");
@@ -65,9 +80,15 @@ public class SaveUserData implements InternalSaveHandler {
         }
     }
 
+    /**
+     * Load the locally stored courses into the provided Student object. Retrieval
+     * is based on the getters of the Student object, cannot be manually overridden.
+     * @param readToStudent The student object that saved courses is to be loaded onto.
+     */
     public void load(Student readToStudent) throws FileNotFoundException {
         // Check if the folders exist.
-        File myFilePath = new File(System.getProperty("user.home") + "\\GradesApplication\\UserData\\");
+        File myFilePath = new File(
+            System.getProperty("user.home") + "\\GradesApplication\\UserData\\");
         if (myFilePath.mkdirs()) {
             System.out.println("Data folder not found. New folder created.");
         }
@@ -79,7 +100,7 @@ public class SaveUserData implements InternalSaveHandler {
         if (!userDataFile.exists()) {
             throw new FileNotFoundException("Could not find this file.");
         } else if (userDataFile.exists()) {
-            try (Scanner userDataParser = new Scanner(userDataFile)) {
+            try (Scanner userDataParser = new Scanner(userDataFile, StandardCharsets.UTF_8)) {
                 Course newCourse;
                 double coursePoints;
                 while (userDataParser.hasNextLine()) {
@@ -87,20 +108,30 @@ public class SaveUserData implements InternalSaveHandler {
                     if (currentLine.startsWith("ID")) {
                         int startIndexID = "ID:".length();
                         int endIndexID = currentLine.indexOf(";");
-                        String parsedStudentName = (currentLine.substring(startIndexID, endIndexID)).replace("_", " ");
+                        String parsedStudentName = (
+                            currentLine.substring(startIndexID, endIndexID)).replace("_", " ");
                         readToStudent.setPersonName(parsedStudentName);
                         continue;
                     }
-                    String dataFields[] = currentLine.split("::");
+                    String[] dataFields = currentLine.split("::");
                     coursePoints = Double.parseDouble(dataFields[3]);
-                    newCourse = new Course(dataFields[0], dataFields[1], dataFields[2], coursePoints);
+                    newCourse = new Course(
+                        dataFields[0], dataFields[1], dataFields[2], coursePoints);
                     readToStudent.addNewGrade(newCourse);
                 }
                 userDataParser.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
+    /**
+     * Main method to quickly test functionality.
+     * @param args None
+     * @throws FileNotFoundException From called methods.
+     * @throws IOException From called methods.
+     */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Student testPerson = new Student("Ola Nordmann");
         testPerson.addNewGrade("TestCourse01", "MMM0001", "B");

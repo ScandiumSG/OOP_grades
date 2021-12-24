@@ -6,6 +6,14 @@ public class Course {
     private double coursePoints = 7.5;
     private String courseGrade;
 
+    /**
+     * Constructor that defines the new course object. Takes inn all parameters required to make a
+     * Course object. These parameters can be changed later using the available setter methods.
+     * @param subjectName The name of the course.
+     * @param subjectCode The course code, e.g. TKJ4100
+     * @param subjectGrade The attained grade in the course.
+     * @param points The number of points associated with the course.
+     */
     public Course(String subjectName, String subjectCode, String subjectGrade,
             double points) {
         // Validation of course name
@@ -18,14 +26,14 @@ public class Course {
         // Validation of course code
         if (!subjectCode.getClass().equals(String.class)) {
             throw new IllegalArgumentException("Course code must be a string.");
-        } else if (!(subjectCode.substring(0, 2).matches("[A-Z]+")) &&
-                (subjectCode.substring(0, 3).matches("[A-Z]+"))
+        } else if (!(subjectCode.substring(0, 2).matches("[A-Z]+")) 
+            && (subjectCode.substring(0, 3).matches("[A-Z]+"))
                 && (subjectCode.substring(0, 4).matches("[A-Z]+"))) {
             throw new IllegalArgumentException(
                     "Invalid format of course code. "
                             + "Course code must start with 2-4 letters.");
-        } else if ((!subjectCode.substring(2).matches("[0-9]+")) &&
-                (!subjectCode.substring(3).matches("[0-9]+"))
+        } else if ((!subjectCode.substring(2).matches("[0-9]+")) 
+            && (!subjectCode.substring(3).matches("[0-9]+"))
                 && (!subjectCode.substring(4).matches("[0-9]+"))) {
             throw new IllegalArgumentException(
                     "Invalid format of course code. "
@@ -36,10 +44,10 @@ public class Course {
         }
 
         // Validation of course grade
-        if (subjectGrade.toLowerCase().equals("best�tt")) {
+        if (subjectGrade.toLowerCase().equals("bestått")) {
             courseGrade = "Best�tt";
-        } else if ((!"ABCDEF".contains(subjectGrade)) &&
-                (!"abcdef".contains(subjectGrade))) {
+        } else if ((!"ABCDEF".contains(subjectGrade)) 
+            && (!"abcdef".contains(subjectGrade))) {
             throw new IllegalArgumentException("Invalid grade input, "
                     + "must be a grade in range A-F or \"Bestått\".");
         } else if ("abcdef".contains(subjectGrade)) {
@@ -57,6 +65,13 @@ public class Course {
         }
     }
 
+    /**
+     * Constructor that defines the new course object. Takes inn all parameters required to make a
+     * Course object. These parameters can be changed later using the available setter methods.
+     * @param subjectName The name of the course.
+     * @param subjectCode The course code, e.g. TKJ4100
+     * @param subjectGrade The attained grade in the course.
+     */
     public Course(String subjectName, String subjectCode, String subjectGrade) {
         // Validation of course name
         if (!subjectName.getClass().equals(String.class)) {
@@ -68,14 +83,14 @@ public class Course {
         // Validation of course code
         if (!subjectCode.getClass().equals(String.class)) {
             throw new IllegalArgumentException("Course code must be a string.");
-        } else if (!(subjectCode.substring(0, 2).matches("[A-Z]+")) &&
-                (subjectCode.substring(0, 3).matches("[A-Z]+"))
+        } else if (!(subjectCode.substring(0, 2).matches("[A-Z]+")) 
+            && (subjectCode.substring(0, 3).matches("[A-Z]+"))
                 && (subjectCode.substring(0, 4).matches("[A-Z]+"))) {
             throw new IllegalArgumentException(
                     "Invalid format of course code. "
                             + "Course code must start with 2-4 letters.");
-        } else if ((!subjectCode.substring(2).matches("[0-9]+")) &&
-                (!subjectCode.substring(3).matches("[0-9]+"))
+        } else if ((!subjectCode.substring(2).matches("[0-9]+")) 
+            && (!subjectCode.substring(3).matches("[0-9]+"))
                 && (!subjectCode.substring(4).matches("[0-9]+"))) {
             throw new IllegalArgumentException(
                     "Invalid format of course code. "
@@ -86,10 +101,10 @@ public class Course {
         }
 
         // Validation of course grade
-        if (subjectGrade.toLowerCase().equals("best�tt")) {
-            courseGrade = "Best�tt";
-        } else if ((!"ABCDEF".contains(subjectGrade)) &&
-                (!"abcdef".contains(subjectGrade))) {
+        if (subjectGrade.toLowerCase().equals("bestått")) {
+            courseGrade = "Bestått";
+        } else if ((!"ABCDEF".contains(subjectGrade)) 
+            && (!"abcdef".contains(subjectGrade))) {
             throw new IllegalArgumentException("Invalid grade input, "
                     + "must be a grade in range A-F or \"Bestått\".");
         } else if ("abcdef".contains(subjectGrade)) {
@@ -117,20 +132,20 @@ public class Course {
     /**
      * Change the course code of this Course object.
      * 
-     * @param inputName A string with the new course code
+     * @param inputCode A string with the new course code
      * @throws IllegalArgumentException if the new String inputCode = null.
      */
     public void setCourseCode(String inputCode) {
         if (!inputCode.getClass().equals(String.class)) {
             throw new IllegalArgumentException("Course code must be a string.");
-        } else if ((!(inputCode.substring(0, 2).matches("[A-Z]+")) &&
-                !(inputCode.substring(0, 3).matches("[A-Z]+"))
+        } else if ((!(inputCode.substring(0, 2).matches("[A-Z]+")) 
+            && !(inputCode.substring(0, 3).matches("[A-Z]+"))
                 && !(inputCode.substring(0, 4).matches("[A-Z]+")))) {
             throw new IllegalArgumentException(
                     "Invalid format of course code. "
                             + "Course code must start with 2-4 letters.");
-        } else if ((!inputCode.substring(2).matches("[0-9]+")) &&
-                (!inputCode.substring(3).matches("[0-9]+"))
+        } else if ((!inputCode.substring(2).matches("[0-9]+")) 
+            && (!inputCode.substring(3).matches("[0-9]+"))
                 && (!inputCode.substring(4).matches("[0-9]+"))) {
             throw new IllegalArgumentException(
                     "Invalid format of course code. "
@@ -145,14 +160,14 @@ public class Course {
     /**
      * Change the course grade of this Course object.
      * 
-     * @param inputName A string with the new course grade
+     * @param inputGrade A string with the new course grade
      * @throws IllegalArgumentException if the new String inputGrade = null.
      */
     public void setCourseGrade(String inputGrade) {
         if (inputGrade.toLowerCase().equals("best�tt")) {
             courseGrade = "Best�tt";
-        } else if ((!"ABCDEF".contains(inputGrade)) &&
-                (!"abcdef".contains(inputGrade))) {
+        } else if ((!"ABCDEF".contains(inputGrade)) 
+            && (!"abcdef".contains(inputGrade))) {
             throw new IllegalArgumentException(
                     "Invalid grade input, "
                             + "must be a grade in range A-F or \"Bestått\".");
@@ -166,7 +181,7 @@ public class Course {
     /**
      * Change the course points of this Course object.
      * 
-     * @param inputName A double with the new course points
+     * @param points A double with the new course points
      * @throws IllegalArgumentException if the new double points <= 0.
      */
     public void setCoursePoints(double points) {
@@ -225,6 +240,12 @@ public class Course {
                 + getCoursePoints();
     }
 
+    /**
+     * Main method to quickly test functionality.
+     * @param args None
+     * @throws FileNotFoundException From called methods.
+     * @throws IOException From called methods.
+     */
     public static void main(String[] args) {
         Course new1 = new Course("ITGK", "TDT4109", "B", 7.5);
         System.out.println(new1);

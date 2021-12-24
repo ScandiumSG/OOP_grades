@@ -320,13 +320,11 @@ public class Student {
      * 
      * @param findThisCourseCode The course code that we look for in the Course
      *                           objects.
-     * @param studentGrades      The student object that is searched through
-     *                           for the Course.
+     * @return The course object that has the same courseCode as
+     *         provided as input.
      * @throws IllegalArgumentException Triggred if the entered courseCode
      *                                  does not exist in the provided Student
      *                                  instance.
-     * @return The course object that has the same courseCode as
-     *         provided as input.
      */
     public Course findCourseUsingCourseCode(String findThisCourseCode)
             throws IllegalArgumentException {
@@ -351,8 +349,7 @@ public class Student {
      * Return all Course objects associated with this student instance in
      * the form of a ObservableList.
      * 
-     * @param studentGrades
-     * @return A ObservableList<Course> Can be used directly with TableView
+     * @return A ObservableList of Course objects, can be used directly with TableView
      *         in the GUI.
      */
     public ObservableList<Course> getObservableListOfCourses() {
@@ -397,16 +394,21 @@ public class Student {
                 + getAverageGrade();
     }
 
+    /**
+     * Main method to quickly test functionality.
+     * @param args None
+     * @throws FileNotFoundException From called methods.
+     * @throws IOException From called methods.
+     */
     public static void main(String[] args) {
-        Student Per = new Student("Per");
-        Per.addNewGrade("ITGK", "TDT4109", "B");
-        Per.addNewGrade("Webtek", "IT2805", "A");
-        Per.addNewGrade("Matte1", "TMA4100", "B");
-        Per.addNewGrade("Masterprosjekt", "KJ3900", "B", 60);
-        Per.addNewGrade("Exphil", "EXPH0004", "D", 7.5);
-        System.out.println(Per);
-        System.out.println("Best grade: " + Per.getBestGrade());
-        System.out.println("Worst grade: " + Per.getWorstGrade());
+        Student per = new Student("Per");
+        per.addNewGrade("ITGK", "TDT4109", "B");
+        per.addNewGrade("Webtek", "IT2805", "A");
+        per.addNewGrade("Matte1", "TMA4100", "B");
+        per.addNewGrade("Masterprosjekt", "KJ3900", "B", 60);
+        per.addNewGrade("Exphil", "EXPH0004", "D", 7.5);
+        System.out.println(per);
+        System.out.println("Best grade: " + per.getBestGrade());
+        System.out.println("Worst grade: " + per.getWorstGrade());
     }
-
 }
