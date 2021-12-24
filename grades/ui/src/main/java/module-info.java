@@ -6,4 +6,6 @@ module grades.ui {
     requires java.desktop;
 
     requires grades.core;
+
+    opens grades.ui to javafx.graphics, javafx.fxml;
 }
