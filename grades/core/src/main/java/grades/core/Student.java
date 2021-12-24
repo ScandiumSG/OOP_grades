@@ -32,7 +32,7 @@ public class Student {
      */
     public Student(String name) {
         name = name.trim();
-        if (name.equals(null) || name.equals("")) {
+        if (name == null || name.equals("")) {
             throw new IllegalArgumentException(
                     "Person name cannot be 'null' or blank");
         } else {
@@ -142,7 +142,7 @@ public class Student {
      */
     public void setPersonName(String name) {
         name = name.trim();
-        if (name.equals(null) || name.equals(" ")) {
+        if (name == null || name.equals("")) {
             throw new IllegalArgumentException(
                     "Person name cannot be 'null' or blank");
         } else {

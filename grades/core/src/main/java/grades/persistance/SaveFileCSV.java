@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class SaveFileCSV implements SaveHandler {
@@ -84,7 +85,7 @@ public class SaveFileCSV implements SaveHandler {
         }
 
         // Retrieve information and write to .csv file
-        PrintWriter fileWriter = new PrintWriter(mySaveFile);
+        PrintWriter fileWriter = new PrintWriter(mySaveFile, StandardCharsets.UTF_8);
         fileWriter.print("::PersonName: "
                 + courseCollection.getPersonName()
                 + ";");
@@ -157,7 +158,7 @@ public class SaveFileCSV implements SaveHandler {
             throw new FileNotFoundException("File not found!");
         }
 
-        try (Scanner CSVParser = new Scanner(mySaveFile)) {
+        try (Scanner CSVParser = new Scanner(mySaveFile, StandardCharsets.UTF_8)) {
             Course newCourse;
             double coursePoints;
             while (CSVParser.hasNextLine()) {
@@ -195,7 +196,7 @@ public class SaveFileCSV implements SaveHandler {
             throw new FileNotFoundException("File not found!");
         }
 
-        try (Scanner CSVParser = new Scanner(mySaveFile)) {
+        try (Scanner CSVParser = new Scanner(mySaveFile, StandardCharsets.UTF_8)) {
             Course newCourse;
             double coursePoints;
             while (CSVParser.hasNextLine()) {
