@@ -16,7 +16,7 @@ public class ApplicationMyGrades extends Application {
         primaryStage.setTitle("Stian K. Gaustad TDT4100 Project - My Grades");
         primaryStage.getIcons().add(
                 new Image(getClass().getResourceAsStream(
-                        "images/testThumbnail.jpg")));
+                        "testThumbnail.jpg")));
         primaryStage.setScene(new Scene(parent));
         primaryStage.show();
     }
