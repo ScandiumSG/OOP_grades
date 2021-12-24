@@ -43,7 +43,7 @@
                         <TableColumn fx:id="courseGradeColumn" text="Karakter" />
                     </columns>
                   </TableView>
-                  <Pane fx:id="IOPanes" layoutX="270.0" layoutY="90.0">
+                  <Pane fx:id="ioPanes" layoutX="270.0" layoutY="90.0">
                      <children>
                         <Pane fx:id="usernameChangePane" prefHeight="120.0" prefWidth="268.0" style="-fx-border-color: gray; -fx-background-color: lightgray;">
                            <children>
@@ -63,7 +63,7 @@
                               <TextField fx:id="loadPaneFileName" layoutX="30.0" layoutY="60.0" promptText="Filnavn" />
                               <Label layoutX="30.0" layoutY="43.0" text="Skriv inn navnet til filen" />
                               <Button fx:id="loadPaneConfirmButton" layoutX="202.0" layoutY="60.0" mnemonicParsing="false" onAction="#loadFile" text="OK" />
-                              <Button fx:id="CloseLoadFilePaneBtn" layoutX="242.0" layoutY="2.0" mnemonicParsing="false" onAction="#loadFilePaneToggle" text="X" />
+                              <Button fx:id="closeLoadFilePaneBtn" layoutX="242.0" layoutY="2.0" mnemonicParsing="false" onAction="#loadFilePaneToggle" text="X" />
                               <Label layoutX="26.0" layoutY="20.0" text="OK henter fra /GradesApplication/Import" />
                               <Label layoutX="38.0" layoutY="1.0" text="Importer data fra CSV fil">
                                  <font>
@@ -78,7 +78,7 @@
                               <TextField fx:id="savePaneFileName" layoutX="30.0" layoutY="60.0" promptText="Filnavn" />
                               <Label layoutX="30.0" layoutY="43.0" text="Skriv inn ønsket filnavn:" />
                               <Button fx:id="savePaneConfirmButton" layoutX="202.0" layoutY="60.0" mnemonicParsing="false" onAction="#saveFile" text="Lagre" />
-                              <Button fx:id="CloseSaveFilePaneBtn" layoutX="242.0" layoutY="2.0" mnemonicParsing="false" onAction="#saveFilePaneToggle" text="X" />
+                              <Button fx:id="closeSaveFilePaneBtn" layoutX="242.0" layoutY="2.0" mnemonicParsing="false" onAction="#saveFilePaneToggle" text="X" />
                               <Label layoutX="31.0" layoutY="17.0" prefHeight="25.0" prefWidth="234.0" text="Fil plasseres i /GradesApplication/Export" wrapText="true">
                                  <font>
                                     <Font size="10.0" />
